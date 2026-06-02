@@ -43,7 +43,8 @@ export const AdminBar: React.FC<{
   const router = useRouter()
 
   const onAuthChange = React.useCallback((user: PayloadMeUser) => {
-    setShow(Boolean(user?.id))
+    // @ts-expect-error - user type from Payload may not have id or roles, adjust as needed
+    setShow(Boolean(user?.id && user?.roles?.includes('Admin')))
   }, [])
 
   return (
