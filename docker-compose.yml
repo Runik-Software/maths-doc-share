@@ -1,31 +1,20 @@
-version: '3'
-
 services:
-  payload:
-    image: node:18-alpine
+  postgres:
+    image: postgres:17-alpine
     ports:
-      - '3000:3000'
+      - 5432:5432
+    environment:
+      - POSTGRES_PASSWORD=S3cret
+      - POSTGRES_USER=postgres
+      - POSTGRES_DB=maths-doc-share
     volumes:
-      - .:/home/node/app
-      - node_modules:/home/node/app/node_modules
-    working_dir: /home/node/app/
-    command: sh -c "yarn install && yarn dev"
-    depends_on:
-      - mongo
-    env_file:
-      - .env
-
-  mongo:
-    image: mongo:latest
+      - postgres:/var/lib/postgresql/data
+  drizzle-gate:
+    image: ghcr.io/drizzle-team/gateway:latest
     ports:
-      - '27017:27017'
-    command:
-      - --storageEngine=wiredTiger
+      - 4983:4983
     volumes:
-      - data:/data/db
-    logging:
-      driver: none
-
+      - drizzle-gateway:/app:rw
 volumes:
-  data:
-  node_modules:
+  drizzle-gateway:
+  postgres:
