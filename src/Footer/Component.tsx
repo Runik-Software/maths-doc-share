@@ -12,19 +12,29 @@ export async function Footer() {
   const navItems = footerData?.navItems || []
 
   return (
-    <footer className="mt-auto border-t border-border bg-black dark:bg-card text-white">
-      <div className="container py-8 gap-8 flex flex-col md:flex-row md:justify-between">
-        <Link className="flex items-center" href="/">
-          <Logo />
-        </Link>
+    <footer className="mt-auto border-t border-border bg-muted/30">
+      <div className="container flex flex-col gap-8 py-10 md:flex-row md:items-start md:justify-between">
+        <div>
+          <Link className="inline-flex items-center" href="/">
+            <Logo />
+          </Link>
+          <p className="mt-3 max-w-sm text-sm text-muted-foreground">
+            © 2024 MathEd Marketplace. Academic precision for every classroom.
+          </p>
+        </div>
 
-        <div className="flex flex-col-reverse items-start md:flex-row gap-4 md:items-center">
-          <ThemeSelector />
-          <nav className="flex flex-col md:flex-row gap-4">
-            {navItems.map(({ link }, i) => {
-              return <CMSLink className="text-white" key={i} {...link} />
-            })}
+        <div className="flex flex-col items-start gap-4 md:items-end">
+          <nav className="flex flex-wrap gap-x-6 gap-y-2">
+            {navItems.map(({ link }, i) => (
+              <CMSLink
+                className="text-sm text-muted-foreground transition-colors hover:text-emerald-600"
+                key={i}
+                {...link}
+                appearance="inline"
+              />
+            ))}
           </nav>
+          <ThemeSelector />
         </div>
       </div>
     </footer>

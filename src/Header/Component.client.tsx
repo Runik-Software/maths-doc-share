@@ -3,11 +3,13 @@ import { useHeaderTheme } from '@/providers/HeaderTheme'
 import Link from 'next/link'
 import { usePathname } from 'next/navigation'
 import React, { useEffect, useState } from 'react'
+import { ShoppingCart, User as UserIcon } from 'lucide-react'
 
 import type { Header } from '@/payload-types'
 
 import { Logo } from '@/components/Logo/Logo'
 import { HeaderNav } from './Nav'
+import { HeaderSearch } from './Search'
 import { SessionData } from '@auth0/nextjs-auth0/types'
 
 interface HeaderClientProps {
@@ -32,12 +34,53 @@ export const HeaderClient: React.FC<HeaderClientProps> = ({ data, session }) => 
   }, [headerTheme])
 
   return (
-    <header className="w-full relative z-20 border-b" {...(theme ? { 'data-theme': theme } : {})}>
-      <div className="container mx-auto py-4 flex justify-between">
-        <Link href="/">
-          <Logo loading="eager" priority="high" className="invert dark:invert-0" />
-        </Link>
-        <HeaderNav data={data} session={session} />
+    <header
+      className="sticky top-0 z-20 w-full border-b bg-background"
+      {...(theme ? { 'data-theme': theme } : {})}
+    >
+      <div className="container flex items-center gap-4 py-3">
+        <div className="flex items-center gap-6">
+          <Link href="/">
+            <Logo />
+          </Link>
+          <HeaderNav data={data} />
+        </div>
+
+        <div className="hidden flex-1 justify-center px-4 lg:flex">
+          <HeaderSearch className="w-full max-w-md" />
+        </div>
+
+        <div className="ml-auto flex items-center gap-4">
+          {/* Cart — presentational at this stage */}
+          <button
+            type="button"
+            aria-label="Cart"
+            className="text-foreground transition-colors hover:text-emerald-600"
+          >
+            <ShoppingCart className="h-5 w-5" />
+          </button>
+
+          {session ? (
+            <div className="flex items-center gap-2">
+              <UserIcon className="h-5 w-5 text-foreground" />
+              <span className="hidden text-sm sm:inline">{session.user.name}</span>
+              <Link
+                href="/auth/logout"
+                className="text-sm text-muted-foreground transition-colors hover:text-emerald-600"
+              >
+                Logout
+              </Link>
+            </div>
+          ) : (
+            <Link
+              href="/auth/login"
+              className="flex items-center gap-1.5 text-sm text-foreground transition-colors hover:text-emerald-600"
+            >
+              <UserIcon className="h-5 w-5" />
+              <span className="hidden sm:inline">Sign in</span>
+            </Link>
+          )}
+        </div>
       </div>
     </header>
   )
