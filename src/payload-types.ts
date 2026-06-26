@@ -73,6 +73,10 @@ export interface Config {
     categories: Category;
     users: User;
     resources: Resource;
+    subjects: Subject;
+    grades: Grade;
+    'resource-types': ResourceType;
+    reviews: Review;
     redirects: Redirect;
     forms: Form;
     'form-submissions': FormSubmission;
@@ -96,6 +100,10 @@ export interface Config {
     categories: CategoriesSelect<false> | CategoriesSelect<true>;
     users: UsersSelect<false> | UsersSelect<true>;
     resources: ResourcesSelect<false> | ResourcesSelect<true>;
+    subjects: SubjectsSelect<false> | SubjectsSelect<true>;
+    grades: GradesSelect<false> | GradesSelect<true>;
+    'resource-types': ResourceTypesSelect<false> | ResourceTypesSelect<true>;
+    reviews: ReviewsSelect<false> | ReviewsSelect<true>;
     redirects: RedirectsSelect<false> | RedirectsSelect<true>;
     forms: FormsSelect<false> | FormsSelect<true>;
     'form-submissions': FormSubmissionsSelect<false> | FormSubmissionsSelect<true>;
@@ -422,23 +430,20 @@ export interface Category {
 export interface User {
   id: number;
   name?: string | null;
+  email?: string | null;
+  picture?: string | null;
+  /**
+   * Public credential/role shown on resources & reviews, e.g. "M.Ed." or "Math Specialist".
+   */
+  headline?: string | null;
+  /**
+   * Short public tagline shown on the author card, e.g. "Top educator • 15+ years experience".
+   */
+  bio?: string | null;
+  auth0Sub?: string | null;
+  roles?: ('Admin' | 'User')[] | null;
   updatedAt: string;
   createdAt: string;
-  email: string;
-  resetPasswordToken?: string | null;
-  resetPasswordExpiration?: string | null;
-  salt?: string | null;
-  hash?: string | null;
-  loginAttempts?: number | null;
-  lockUntil?: string | null;
-  sessions?:
-    | {
-        id: string;
-        createdAt?: string | null;
-        expiresAt: string;
-      }[]
-    | null;
-  password?: string | null;
   collection: 'users';
 }
 /**
@@ -791,6 +796,13 @@ export interface Resource {
   id: number;
   title: string;
   heroImage?: (number | null) | Media;
+  /**
+   * Additional preview images shown as thumbnails on the resource page.
+   */
+  gallery?: (number | Media)[] | null;
+  /**
+   * Leave blank or set to 0 to show the resource as FREE.
+   */
   price?: number | null;
   /**
    * This content should show an "at a glance" summary of the resource.
@@ -825,8 +837,36 @@ export interface Resource {
     };
     [k: string]: unknown;
   };
+  /**
+   * Short bullet highlights shown in the "At a Glance" panel.
+   */
+  atAGlance?:
+    | {
+        text: string;
+        id?: string | null;
+      }[]
+    | null;
+  /**
+   * Checklist of what students/teachers gain from this resource.
+   */
+  learningObjectives?:
+    | {
+        text: string;
+        id?: string | null;
+      }[]
+    | null;
   relatedResources?: (number | Resource)[] | null;
   categories?: (number | Category)[] | null;
+  subject?: (number | null) | Subject;
+  /**
+   * Supports a range, e.g. Grade 9 + Grade 10.
+   */
+  grades?: (number | Grade)[] | null;
+  resourceType?: (number | null) | ResourceType;
+  /**
+   * Show the "Verified Resource" badge.
+   */
+  verified?: boolean | null;
   meta?: {
     title?: string | null;
     /**
@@ -837,10 +877,21 @@ export interface Resource {
   };
   publishedAt?: string | null;
   authors?: (number | User)[] | null;
+  /**
+   * Automatically calculated from reviews.
+   */
+  averageRating?: number | null;
+  /**
+   * Automatically calculated from reviews.
+   */
+  reviewCount?: number | null;
   populatedAuthors?:
     | {
         id?: string | null;
         name?: string | null;
+        picture?: string | null;
+        headline?: string | null;
+        bio?: string | null;
       }[]
     | null;
   /**
@@ -851,6 +902,96 @@ export interface Resource {
   updatedAt: string;
   createdAt: string;
   _status?: ('draft' | 'published') | null;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "subjects".
+ */
+export interface Subject {
+  id: number;
+  title: string;
+  /**
+   * When enabled, the slug will auto-generate from the title field on save and autosave.
+   */
+  generateSlug?: boolean | null;
+  slug: string;
+  updatedAt: string;
+  createdAt: string;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "grades".
+ */
+export interface Grade {
+  id: number;
+  /**
+   * e.g. "Key Stage 3", "GCSE", "A-Level".
+   */
+  title: string;
+  /**
+   * Optional grouping shown in breadcrumbs, e.g. "Secondary".
+   */
+  band?: string | null;
+  /**
+   * Controls the order grades appear in filters (low to high).
+   */
+  order?: number | null;
+  /**
+   * When enabled, the slug will auto-generate from the title field on save and autosave.
+   */
+  generateSlug?: boolean | null;
+  slug: string;
+  updatedAt: string;
+  createdAt: string;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "resource-types".
+ */
+export interface ResourceType {
+  id: number;
+  /**
+   * e.g. "Worksheets", "Lesson Plans", "Assessments".
+   */
+  title: string;
+  /**
+   * Icon shown next to this type in the browse filters.
+   */
+  icon?: ('fileText' | 'bookOpen' | 'clipboardCheck') | null;
+  order?: number | null;
+  /**
+   * When enabled, the slug will auto-generate from the title field on save and autosave.
+   */
+  generateSlug?: boolean | null;
+  slug: string;
+  updatedAt: string;
+  createdAt: string;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "reviews".
+ */
+export interface Review {
+  id: number;
+  resource: number | Resource;
+  author: number | User;
+  /**
+   * Star rating from 1 to 5.
+   */
+  rating: number;
+  body: string;
+  /**
+   * Mark as a verified purchase from a mathematics educator.
+   */
+  verified?: boolean | null;
+  populatedAuthor?: {
+    id?: string | null;
+    name?: string | null;
+    picture?: string | null;
+    headline?: string | null;
+  };
+  updatedAt: string;
+  createdAt: string;
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
@@ -1065,6 +1206,22 @@ export interface PayloadLockedDocument {
     | ({
         relationTo: 'resources';
         value: number | Resource;
+      } | null)
+    | ({
+        relationTo: 'subjects';
+        value: number | Subject;
+      } | null)
+    | ({
+        relationTo: 'grades';
+        value: number | Grade;
+      } | null)
+    | ({
+        relationTo: 'resource-types';
+        value: number | ResourceType;
+      } | null)
+    | ({
+        relationTo: 'reviews';
+        value: number | Review;
       } | null)
     | ({
         relationTo: 'redirects';
@@ -1414,22 +1571,14 @@ export interface CategoriesSelect<T extends boolean = true> {
  */
 export interface UsersSelect<T extends boolean = true> {
   name?: T;
+  email?: T;
+  picture?: T;
+  headline?: T;
+  bio?: T;
+  auth0Sub?: T;
+  roles?: T;
   updatedAt?: T;
   createdAt?: T;
-  email?: T;
-  resetPasswordToken?: T;
-  resetPasswordExpiration?: T;
-  salt?: T;
-  hash?: T;
-  loginAttempts?: T;
-  lockUntil?: T;
-  sessions?:
-    | T
-    | {
-        id?: T;
-        createdAt?: T;
-        expiresAt?: T;
-      };
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
@@ -1438,11 +1587,28 @@ export interface UsersSelect<T extends boolean = true> {
 export interface ResourcesSelect<T extends boolean = true> {
   title?: T;
   heroImage?: T;
+  gallery?: T;
   price?: T;
   Overview?: T;
   content?: T;
+  atAGlance?:
+    | T
+    | {
+        text?: T;
+        id?: T;
+      };
+  learningObjectives?:
+    | T
+    | {
+        text?: T;
+        id?: T;
+      };
   relatedResources?: T;
   categories?: T;
+  subject?: T;
+  grades?: T;
+  resourceType?: T;
+  verified?: T;
   meta?:
     | T
     | {
@@ -1452,17 +1618,80 @@ export interface ResourcesSelect<T extends boolean = true> {
       };
   publishedAt?: T;
   authors?: T;
+  averageRating?: T;
+  reviewCount?: T;
   populatedAuthors?:
     | T
     | {
         id?: T;
         name?: T;
+        picture?: T;
+        headline?: T;
+        bio?: T;
       };
   generateSlug?: T;
   slug?: T;
   updatedAt?: T;
   createdAt?: T;
   _status?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "subjects_select".
+ */
+export interface SubjectsSelect<T extends boolean = true> {
+  title?: T;
+  generateSlug?: T;
+  slug?: T;
+  updatedAt?: T;
+  createdAt?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "grades_select".
+ */
+export interface GradesSelect<T extends boolean = true> {
+  title?: T;
+  band?: T;
+  order?: T;
+  generateSlug?: T;
+  slug?: T;
+  updatedAt?: T;
+  createdAt?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "resource-types_select".
+ */
+export interface ResourceTypesSelect<T extends boolean = true> {
+  title?: T;
+  icon?: T;
+  order?: T;
+  generateSlug?: T;
+  slug?: T;
+  updatedAt?: T;
+  createdAt?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "reviews_select".
+ */
+export interface ReviewsSelect<T extends boolean = true> {
+  resource?: T;
+  author?: T;
+  rating?: T;
+  body?: T;
+  verified?: T;
+  populatedAuthor?:
+    | T
+    | {
+        id?: T;
+        name?: T;
+        picture?: T;
+        headline?: T;
+      };
+  updatedAt?: T;
+  createdAt?: T;
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema

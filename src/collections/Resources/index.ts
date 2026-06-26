@@ -41,7 +41,16 @@ export const Resources: CollectionConfig<'resources'> = {
   defaultPopulate: {
     title: true,
     slug: true,
+    heroImage: true,
+    price: true,
+    verified: true,
     categories: true,
+    subject: true,
+    grades: true,
+    resourceType: true,
+    averageRating: true,
+    reviewCount: true,
+    populatedAuthors: true,
     meta: {
       image: true,
       description: true,
@@ -82,8 +91,20 @@ export const Resources: CollectionConfig<'resources'> = {
               relationTo: 'media',
             },
             {
+              name: 'gallery',
+              type: 'upload',
+              relationTo: 'media',
+              hasMany: true,
+              admin: {
+                description: 'Additional preview images shown as thumbnails on the resource page.',
+              },
+            },
+            {
               name: 'price',
               type: 'number',
+              admin: {
+                description: 'Leave blank or set to 0 to show the resource as FREE.',
+              },
             },
             {
               name: 'Overview',
@@ -122,6 +143,38 @@ export const Resources: CollectionConfig<'resources'> = {
               label: false,
               required: true,
             },
+            {
+              name: 'atAGlance',
+              type: 'array',
+              labels: {
+                singular: 'Highlight',
+                plural: 'Highlights',
+              },
+              admin: {
+                description: 'Short bullet highlights shown in the "At a Glance" panel.',
+              },
+              fields: [
+                {
+                  name: 'text',
+                  type: 'text',
+                  required: true,
+                },
+              ],
+            },
+            {
+              name: 'learningObjectives',
+              type: 'array',
+              admin: {
+                description: 'Checklist of what students/teachers gain from this resource.',
+              },
+              fields: [
+                {
+                  name: 'text',
+                  type: 'text',
+                  required: true,
+                },
+              ],
+            },
           ],
           label: 'Content',
         },
@@ -151,6 +204,41 @@ export const Resources: CollectionConfig<'resources'> = {
               },
               hasMany: true,
               relationTo: 'categories',
+            },
+            {
+              name: 'subject',
+              type: 'relationship',
+              relationTo: 'subjects',
+              admin: {
+                position: 'sidebar',
+              },
+            },
+            {
+              name: 'grades',
+              type: 'relationship',
+              relationTo: 'grades',
+              hasMany: true,
+              admin: {
+                position: 'sidebar',
+                description: 'Supports a range, e.g. Grade 9 + Grade 10.',
+              },
+            },
+            {
+              name: 'resourceType',
+              type: 'relationship',
+              relationTo: 'resource-types',
+              admin: {
+                position: 'sidebar',
+              },
+            },
+            {
+              name: 'verified',
+              type: 'checkbox',
+              defaultValue: false,
+              admin: {
+                position: 'sidebar',
+                description: 'Show the "Verified Resource" badge.',
+              },
             },
           ],
           label: 'Meta',
@@ -213,6 +301,26 @@ export const Resources: CollectionConfig<'resources'> = {
       hasMany: true,
       relationTo: 'users',
     },
+    {
+      name: 'averageRating',
+      type: 'number',
+      defaultValue: 0,
+      admin: {
+        position: 'sidebar',
+        readOnly: true,
+        description: 'Automatically calculated from reviews.',
+      },
+    },
+    {
+      name: 'reviewCount',
+      type: 'number',
+      defaultValue: 0,
+      admin: {
+        position: 'sidebar',
+        readOnly: true,
+        description: 'Automatically calculated from reviews.',
+      },
+    },
     // This field is only used to populate the user data via the `populateAuthors` hook
     // This is because the `user` collection has access control locked to protect user privacy
     // GraphQL will also not return mutated user data that differs from the underlying schema
@@ -233,6 +341,18 @@ export const Resources: CollectionConfig<'resources'> = {
         },
         {
           name: 'name',
+          type: 'text',
+        },
+        {
+          name: 'picture',
+          type: 'text',
+        },
+        {
+          name: 'headline',
+          type: 'text',
+        },
+        {
+          name: 'bio',
           type: 'text',
         },
       ],

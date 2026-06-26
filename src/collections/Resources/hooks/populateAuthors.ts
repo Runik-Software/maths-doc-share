@@ -25,6 +25,9 @@ export const populateAuthors: CollectionAfterReadHook = async ({ doc, req, req: 
           doc.populatedAuthors = authorDocs.map((authorDoc) => ({
             id: authorDoc.id,
             name: authorDoc.name,
+            picture: authorDoc.picture,
+            headline: authorDoc.headline,
+            bio: authorDoc.bio,
           }))
         }
       } catch {
