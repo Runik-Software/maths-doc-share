@@ -124,17 +124,17 @@ if [[ -d "${TEMP_DIR}/media" ]]; then
   cp -R "${TEMP_DIR}/media/." "${MEDIA_DIR}/"
 fi
 
-echo "Restoring database..."
+echo "Restoring database (data only)..."
 if [[ "${MODE}" == "docker" ]]; then
   CONTAINER_DUMP_PATH="/tmp/database.dump"
   (
     cd "${ROOT_DIR}"
     "${COMPOSE_CMD[@]}" cp "${DUMP_FILE}" "${DB_DOCKER_SERVICE}:${CONTAINER_DUMP_PATH}"
-    "${COMPOSE_CMD[@]}" exec -T "${DB_DOCKER_SERVICE}" env PGPASSWORD="${DB_PASSWORD}" pg_restore --clean --if-exists --no-owner --no-acl -U "${DB_USER}" -d "${DB_NAME}" "${CONTAINER_DUMP_PATH}"
+    "${COMPOSE_CMD[@]}" exec -T "${DB_DOCKER_SERVICE}" env PGPASSWORD="${DB_PASSWORD}" pg_restore --data-only --no-owner --no-acl -U "${DB_USER}" -d "${DB_NAME}" "${CONTAINER_DUMP_PATH}"
     "${COMPOSE_CMD[@]}" exec -T "${DB_DOCKER_SERVICE}" rm -f "${CONTAINER_DUMP_PATH}"
   )
 else
-  PGPASSWORD="${DB_PASSWORD}" pg_restore --clean --if-exists --no-owner --no-acl -h "${DB_HOST}" -p "${DB_PORT}" -U "${DB_USER}" -d "${DB_NAME}" "${DUMP_FILE}"
+  PGPASSWORD="${DB_PASSWORD}" pg_restore --data-only --no-owner --no-acl -h "${DB_HOST}" -p "${DB_PORT}" -U "${DB_USER}" -d "${DB_NAME}" "${DUMP_FILE}"
 fi
 
 echo "Import complete."

@@ -89,22 +89,22 @@ export const seed = async ({
 
   payload.logger.info(`— Seeding media...`)
 
-  const [image1Buffer, image2Buffer, image3Buffer, hero1Buffer] = await Promise.all([
-    fetchFileByURL(
-      'https://raw.githubusercontent.com/payloadcms/payload/refs/heads/3.x/templates/website/src/endpoints/seed/image-post1.webp',
-    ),
-    fetchFileByURL(
-      'https://raw.githubusercontent.com/payloadcms/payload/refs/heads/3.x/templates/website/src/endpoints/seed/image-post2.webp',
-    ),
-    fetchFileByURL(
-      'https://raw.githubusercontent.com/payloadcms/payload/refs/heads/3.x/templates/website/src/endpoints/seed/image-post3.webp',
-    ),
-    fetchFileByURL(
-      'https://raw.githubusercontent.com/payloadcms/payload/refs/heads/3.x/templates/website/src/endpoints/seed/image-hero1.webp',
-    ),
-  ])
+  // const [image1Buffer, image2Buffer, image3Buffer, hero1Buffer] = await Promise.all([
+  //   fetchFileByURL(
+  //     'https://raw.githubusercontent.com/payloadcms/payload/refs/heads/3.x/templates/website/src/endpoints/seed/image-post1.webp',
+  //   ),
+  //   fetchFileByURL(
+  //     'https://raw.githubusercontent.com/payloadcms/payload/refs/heads/3.x/templates/website/src/endpoints/seed/image-post2.webp',
+  //   ),
+  //   fetchFileByURL(
+  //     'https://raw.githubusercontent.com/payloadcms/payload/refs/heads/3.x/templates/website/src/endpoints/seed/image-post3.webp',
+  //   ),
+  //   fetchFileByURL(
+  //     'https://raw.githubusercontent.com/payloadcms/payload/refs/heads/3.x/templates/website/src/endpoints/seed/image-hero1.webp',
+  //   ),
+  // ])
 
-  const [demoAuthor, image1Doc, image2Doc, image3Doc, imageHomeDoc] = await Promise.all([
+  await Promise.all([
     payload.create({
       collection: 'users',
       data: {
@@ -112,26 +112,26 @@ export const seed = async ({
         email: 'demo-author@example.com',
       },
     }),
-    payload.create({
-      collection: 'media',
-      data: image1,
-      file: image1Buffer,
-    }),
-    payload.create({
-      collection: 'media',
-      data: image2,
-      file: image2Buffer,
-    }),
-    payload.create({
-      collection: 'media',
-      data: image2,
-      file: image3Buffer,
-    }),
-    payload.create({
-      collection: 'media',
-      data: imageHero1,
-      file: hero1Buffer,
-    }),
+    // payload.create({
+    //   collection: 'media',
+    //   data: image1,
+    //   file: image1Buffer,
+    // }),
+    // payload.create({
+    //   collection: 'media',
+    //   data: image2,
+    //   file: image2Buffer,
+    // }),
+    // payload.create({
+    //   collection: 'media',
+    //   data: image2,
+    //   file: image3Buffer,
+    // }),
+    // payload.create({
+    //   collection: 'media',
+    //   data: imageHero1,
+    //   file: hero1Buffer,
+    // }),
     categories.map((category) =>
       payload.create({
         collection: 'categories',
@@ -153,12 +153,12 @@ export const seed = async ({
 
   payload.logger.info(`— Seeding pages...`)
 
-  const [_, contactPage] = await Promise.all([
-    payload.create({
-      collection: 'pages',
-      depth: 0,
-      data: home({ heroImage: imageHomeDoc, metaImage: image2Doc }),
-    }),
+  const [contactPage] = await Promise.all([
+    // payload.create({
+    //   collection: 'pages',
+    //   depth: 0,
+    //   data: home({ heroImage: imageHomeDoc, metaImage: image2Doc }),
+    // }),
     payload.create({
       collection: 'pages',
       depth: 0,
@@ -169,7 +169,7 @@ export const seed = async ({
   await seedMarketplace({
     payload,
     req,
-    images: [image1Doc, image2Doc, image3Doc, imageHomeDoc],
+    images: [],
   })
 
   payload.logger.info(`— Seeding globals...`)
