@@ -7,6 +7,10 @@
   "scripts": {
     "build": "cross-env NODE_OPTIONS=--no-deprecation next build",
     "postbuild": "next-sitemap --config next-sitemap.config.cjs",
+    "db:export": "bash ./scripts/export-db-archive.sh",
+    "db:export:docker": "bash ./scripts/export-db-archive.sh --docker",
+    "db:import": "bash ./scripts/import-db-archive.sh",
+    "db:import:docker": "bash ./scripts/import-db-archive.sh --docker",
     "dev": "cross-env NODE_OPTIONS=--no-deprecation next dev",
     "dev:prod": "cross-env NODE_OPTIONS=--no-deprecation rm -rf .next && pnpm build && pnpm start",
     "generate:importmap": "cross-env NODE_OPTIONS=--no-deprecation payload generate:importmap",

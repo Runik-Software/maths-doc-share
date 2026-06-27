@@ -575,18 +575,229 @@ export interface ArchiveBlock {
     [k: string]: unknown;
   } | null;
   populateBy?: ('collection' | 'selection') | null;
-  relationTo?: 'posts' | null;
+  relationTo?: ('posts' | 'reviews') | null;
   categories?: (number | Category)[] | null;
   limit?: number | null;
   selectedDocs?:
-    | {
-        relationTo: 'posts';
-        value: number | Post;
-      }[]
+    | (
+        | {
+            relationTo: 'posts';
+            value: number | Post;
+          }
+        | {
+            relationTo: 'reviews';
+            value: number | Review;
+          }
+      )[]
     | null;
   id?: string | null;
   blockName?: string | null;
   blockType: 'archive';
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "reviews".
+ */
+export interface Review {
+  id: number;
+  resource: number | Resource;
+  author: number | User;
+  /**
+   * Star rating from 1 to 5.
+   */
+  rating: number;
+  body: string;
+  /**
+   * Mark as a verified purchase from a mathematics educator.
+   */
+  verified?: boolean | null;
+  populatedAuthor?: {
+    id?: string | null;
+    name?: string | null;
+    picture?: string | null;
+    headline?: string | null;
+  };
+  updatedAt: string;
+  createdAt: string;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "resources".
+ */
+export interface Resource {
+  id: number;
+  title: string;
+  heroImage?: (number | null) | Media;
+  /**
+   * Additional preview images shown as thumbnails on the resource page.
+   */
+  gallery?: (number | Media)[] | null;
+  /**
+   * Leave blank or set to 0 to show the resource as FREE.
+   */
+  price?: number | null;
+  /**
+   * This content should show an "at a glance" summary of the resource.
+   */
+  Overview?: {
+    root: {
+      type: string;
+      children: {
+        type: any;
+        version: number;
+        [k: string]: unknown;
+      }[];
+      direction: ('ltr' | 'rtl') | null;
+      format: 'left' | 'start' | 'center' | 'right' | 'end' | 'justify' | '';
+      indent: number;
+      version: number;
+    };
+    [k: string]: unknown;
+  } | null;
+  content: {
+    root: {
+      type: string;
+      children: {
+        type: any;
+        version: number;
+        [k: string]: unknown;
+      }[];
+      direction: ('ltr' | 'rtl') | null;
+      format: 'left' | 'start' | 'center' | 'right' | 'end' | 'justify' | '';
+      indent: number;
+      version: number;
+    };
+    [k: string]: unknown;
+  };
+  /**
+   * Short bullet highlights shown in the "At a Glance" panel.
+   */
+  atAGlance?:
+    | {
+        text: string;
+        id?: string | null;
+      }[]
+    | null;
+  /**
+   * Checklist of what students/teachers gain from this resource.
+   */
+  learningObjectives?:
+    | {
+        text: string;
+        id?: string | null;
+      }[]
+    | null;
+  relatedResources?: (number | Resource)[] | null;
+  categories?: (number | Category)[] | null;
+  subject?: (number | null) | Subject;
+  /**
+   * Supports a range, e.g. Grade 9 + Grade 10.
+   */
+  grades?: (number | Grade)[] | null;
+  resourceType?: (number | null) | ResourceType;
+  /**
+   * Show the "Verified Resource" badge.
+   */
+  verified?: boolean | null;
+  meta?: {
+    title?: string | null;
+    /**
+     * Maximum upload file size: 12MB. Recommended file size for images is <500KB.
+     */
+    image?: (number | null) | Media;
+    description?: string | null;
+  };
+  publishedAt?: string | null;
+  authors?: (number | User)[] | null;
+  /**
+   * Automatically calculated from reviews.
+   */
+  averageRating?: number | null;
+  /**
+   * Automatically calculated from reviews.
+   */
+  reviewCount?: number | null;
+  populatedAuthors?:
+    | {
+        id?: string | null;
+        name?: string | null;
+        picture?: string | null;
+        headline?: string | null;
+        bio?: string | null;
+      }[]
+    | null;
+  /**
+   * When enabled, the slug will auto-generate from the title field on save and autosave.
+   */
+  generateSlug?: boolean | null;
+  slug: string;
+  updatedAt: string;
+  createdAt: string;
+  _status?: ('draft' | 'published') | null;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "subjects".
+ */
+export interface Subject {
+  id: number;
+  title: string;
+  /**
+   * When enabled, the slug will auto-generate from the title field on save and autosave.
+   */
+  generateSlug?: boolean | null;
+  slug: string;
+  updatedAt: string;
+  createdAt: string;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "grades".
+ */
+export interface Grade {
+  id: number;
+  /**
+   * e.g. "Key Stage 3", "GCSE", "A-Level".
+   */
+  title: string;
+  /**
+   * Optional grouping shown in breadcrumbs, e.g. "Secondary".
+   */
+  band?: string | null;
+  /**
+   * Controls the order grades appear in filters (low to high).
+   */
+  order?: number | null;
+  /**
+   * When enabled, the slug will auto-generate from the title field on save and autosave.
+   */
+  generateSlug?: boolean | null;
+  slug: string;
+  updatedAt: string;
+  createdAt: string;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "resource-types".
+ */
+export interface ResourceType {
+  id: number;
+  /**
+   * e.g. "Worksheets", "Lesson Plans", "Assessments".
+   */
+  title: string;
+  /**
+   * Icon shown next to this type in the browse filters.
+   */
+  icon?: ('fileText' | 'bookOpen' | 'clipboardCheck') | null;
+  order?: number | null;
+  /**
+   * When enabled, the slug will auto-generate from the title field on save and autosave.
+   */
+  generateSlug?: boolean | null;
+  slug: string;
+  updatedAt: string;
+  createdAt: string;
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
@@ -785,211 +996,6 @@ export interface Form {
         id?: string | null;
       }[]
     | null;
-  updatedAt: string;
-  createdAt: string;
-}
-/**
- * This interface was referenced by `Config`'s JSON-Schema
- * via the `definition` "resources".
- */
-export interface Resource {
-  id: number;
-  title: string;
-  heroImage?: (number | null) | Media;
-  /**
-   * Additional preview images shown as thumbnails on the resource page.
-   */
-  gallery?: (number | Media)[] | null;
-  /**
-   * Leave blank or set to 0 to show the resource as FREE.
-   */
-  price?: number | null;
-  /**
-   * This content should show an "at a glance" summary of the resource.
-   */
-  Overview?: {
-    root: {
-      type: string;
-      children: {
-        type: any;
-        version: number;
-        [k: string]: unknown;
-      }[];
-      direction: ('ltr' | 'rtl') | null;
-      format: 'left' | 'start' | 'center' | 'right' | 'end' | 'justify' | '';
-      indent: number;
-      version: number;
-    };
-    [k: string]: unknown;
-  } | null;
-  content: {
-    root: {
-      type: string;
-      children: {
-        type: any;
-        version: number;
-        [k: string]: unknown;
-      }[];
-      direction: ('ltr' | 'rtl') | null;
-      format: 'left' | 'start' | 'center' | 'right' | 'end' | 'justify' | '';
-      indent: number;
-      version: number;
-    };
-    [k: string]: unknown;
-  };
-  /**
-   * Short bullet highlights shown in the "At a Glance" panel.
-   */
-  atAGlance?:
-    | {
-        text: string;
-        id?: string | null;
-      }[]
-    | null;
-  /**
-   * Checklist of what students/teachers gain from this resource.
-   */
-  learningObjectives?:
-    | {
-        text: string;
-        id?: string | null;
-      }[]
-    | null;
-  relatedResources?: (number | Resource)[] | null;
-  categories?: (number | Category)[] | null;
-  subject?: (number | null) | Subject;
-  /**
-   * Supports a range, e.g. Grade 9 + Grade 10.
-   */
-  grades?: (number | Grade)[] | null;
-  resourceType?: (number | null) | ResourceType;
-  /**
-   * Show the "Verified Resource" badge.
-   */
-  verified?: boolean | null;
-  meta?: {
-    title?: string | null;
-    /**
-     * Maximum upload file size: 12MB. Recommended file size for images is <500KB.
-     */
-    image?: (number | null) | Media;
-    description?: string | null;
-  };
-  publishedAt?: string | null;
-  authors?: (number | User)[] | null;
-  /**
-   * Automatically calculated from reviews.
-   */
-  averageRating?: number | null;
-  /**
-   * Automatically calculated from reviews.
-   */
-  reviewCount?: number | null;
-  populatedAuthors?:
-    | {
-        id?: string | null;
-        name?: string | null;
-        picture?: string | null;
-        headline?: string | null;
-        bio?: string | null;
-      }[]
-    | null;
-  /**
-   * When enabled, the slug will auto-generate from the title field on save and autosave.
-   */
-  generateSlug?: boolean | null;
-  slug: string;
-  updatedAt: string;
-  createdAt: string;
-  _status?: ('draft' | 'published') | null;
-}
-/**
- * This interface was referenced by `Config`'s JSON-Schema
- * via the `definition` "subjects".
- */
-export interface Subject {
-  id: number;
-  title: string;
-  /**
-   * When enabled, the slug will auto-generate from the title field on save and autosave.
-   */
-  generateSlug?: boolean | null;
-  slug: string;
-  updatedAt: string;
-  createdAt: string;
-}
-/**
- * This interface was referenced by `Config`'s JSON-Schema
- * via the `definition` "grades".
- */
-export interface Grade {
-  id: number;
-  /**
-   * e.g. "Key Stage 3", "GCSE", "A-Level".
-   */
-  title: string;
-  /**
-   * Optional grouping shown in breadcrumbs, e.g. "Secondary".
-   */
-  band?: string | null;
-  /**
-   * Controls the order grades appear in filters (low to high).
-   */
-  order?: number | null;
-  /**
-   * When enabled, the slug will auto-generate from the title field on save and autosave.
-   */
-  generateSlug?: boolean | null;
-  slug: string;
-  updatedAt: string;
-  createdAt: string;
-}
-/**
- * This interface was referenced by `Config`'s JSON-Schema
- * via the `definition` "resource-types".
- */
-export interface ResourceType {
-  id: number;
-  /**
-   * e.g. "Worksheets", "Lesson Plans", "Assessments".
-   */
-  title: string;
-  /**
-   * Icon shown next to this type in the browse filters.
-   */
-  icon?: ('fileText' | 'bookOpen' | 'clipboardCheck') | null;
-  order?: number | null;
-  /**
-   * When enabled, the slug will auto-generate from the title field on save and autosave.
-   */
-  generateSlug?: boolean | null;
-  slug: string;
-  updatedAt: string;
-  createdAt: string;
-}
-/**
- * This interface was referenced by `Config`'s JSON-Schema
- * via the `definition` "reviews".
- */
-export interface Review {
-  id: number;
-  resource: number | Resource;
-  author: number | User;
-  /**
-   * Star rating from 1 to 5.
-   */
-  rating: number;
-  body: string;
-  /**
-   * Mark as a verified purchase from a mathematics educator.
-   */
-  verified?: boolean | null;
-  populatedAuthor?: {
-    id?: string | null;
-    name?: string | null;
-    picture?: string | null;
-    headline?: string | null;
-  };
   updatedAt: string;
   createdAt: string;
 }
