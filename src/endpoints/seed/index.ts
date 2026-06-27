@@ -9,6 +9,7 @@ import { imageHero1 } from './image-hero-1'
 import { post1 } from './post-1'
 import { post2 } from './post-2'
 import { post3 } from './post-3'
+import { seedMarketplace } from './marketplace'
 
 const collections: CollectionSlug[] = [
   'categories',
@@ -18,6 +19,11 @@ const collections: CollectionSlug[] = [
   'forms',
   'form-submissions',
   'search',
+  'subjects',
+  'grades',
+  'resource-types',
+  'resources',
+  'reviews',
 ]
 
 const globals: GlobalSlug[] = ['header', 'footer']
@@ -104,7 +110,6 @@ export const seed = async ({
       data: {
         name: 'Demo Author',
         email: 'demo-author@example.com',
-        password: 'password',
       },
     }),
     payload.create({
@@ -138,60 +143,6 @@ export const seed = async ({
     ),
   ])
 
-  payload.logger.info(`— Seeding posts...`)
-
-  // Do not create posts with `Promise.all` because we want the posts to be created in order
-  // This way we can sort them by `createdAt` or `publishedAt` and they will be in the expected order
-  const post1Doc = await payload.create({
-    collection: 'posts',
-    depth: 0,
-    context: {
-      disableRevalidate: true,
-    },
-    data: post1({ heroImage: image1Doc, blockImage: image2Doc, author: demoAuthor }),
-  })
-
-  const post2Doc = await payload.create({
-    collection: 'posts',
-    depth: 0,
-    context: {
-      disableRevalidate: true,
-    },
-    data: post2({ heroImage: image2Doc, blockImage: image3Doc, author: demoAuthor }),
-  })
-
-  const post3Doc = await payload.create({
-    collection: 'posts',
-    depth: 0,
-    context: {
-      disableRevalidate: true,
-    },
-    data: post3({ heroImage: image3Doc, blockImage: image1Doc, author: demoAuthor }),
-  })
-
-  // update each post with related posts
-  await payload.update({
-    id: post1Doc.id,
-    collection: 'posts',
-    data: {
-      relatedPosts: [post2Doc.id, post3Doc.id],
-    },
-  })
-  await payload.update({
-    id: post2Doc.id,
-    collection: 'posts',
-    data: {
-      relatedPosts: [post1Doc.id, post3Doc.id],
-    },
-  })
-  await payload.update({
-    id: post3Doc.id,
-    collection: 'posts',
-    data: {
-      relatedPosts: [post1Doc.id, post2Doc.id],
-    },
-  })
-
   payload.logger.info(`— Seeding contact form...`)
 
   const contactForm = await payload.create({
@@ -215,6 +166,12 @@ export const seed = async ({
     }),
   ])
 
+  await seedMarketplace({
+    payload,
+    req,
+    images: [image1Doc, image2Doc, image3Doc, imageHomeDoc],
+  })
+
   payload.logger.info(`— Seeding globals...`)
 
   await Promise.all([
@@ -225,18 +182,22 @@ export const seed = async ({
           {
             link: {
               type: 'custom',
-              label: 'Posts',
-              url: '/posts',
+              label: 'Browse',
+              url: '/resources',
             },
           },
           {
             link: {
-              type: 'reference',
-              label: 'Contact',
-              reference: {
-                relationTo: 'pages',
-                value: contactPage.id,
-              },
+              type: 'custom',
+              label: 'Grades',
+              url: '/resources?tab=grades',
+            },
+          },
+          {
+            link: {
+              type: 'custom',
+              label: 'Community',
+              url: '/posts',
             },
           },
         ],
@@ -249,24 +210,32 @@ export const seed = async ({
           {
             link: {
               type: 'custom',
-              label: 'Admin',
-              url: '/admin',
+              label: 'Terms of Service',
+              url: '/',
             },
           },
           {
             link: {
               type: 'custom',
-              label: 'Source Code',
-              newTab: true,
-              url: 'https://github.com/payloadcms/payload/tree/3.x/templates/website',
+              label: 'Privacy Policy',
+              url: '/',
             },
           },
           {
             link: {
               type: 'custom',
-              label: 'Payload',
-              newTab: true,
-              url: 'https://payloadcms.com/',
+              label: 'Help Center',
+              url: '/',
+            },
+          },
+          {
+            link: {
+              type: 'reference',
+              label: 'Contact Us',
+              reference: {
+                relationTo: 'pages',
+                value: contactPage.id,
+              },
             },
           },
         ],

@@ -1,0 +1,13 @@
+services:
+  postgres:
+    image: postgres:17-alpine
+    ports:
+      - 35432:5432
+    environment:
+      - POSTGRES_PASSWORD=S3cret
+      - POSTGRES_USER=postgres
+      - POSTGRES_DB=maths-doc-share
+    volumes:
+      - postgres:/var/lib/postgresql/data
+volumes:
+  postgres:

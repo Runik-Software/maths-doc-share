@@ -7,6 +7,7 @@ import {
   lexicalEditor,
 } from '@payloadcms/richtext-lexical'
 
+import { TextColorFeature } from 'payload-lexical-typography'
 import { linkGroup } from '@/fields/linkGroup'
 
 export const hero: Field = {
@@ -48,6 +49,7 @@ export const hero: Field = {
             HeadingFeature({ enabledHeadingSizes: ['h1', 'h2', 'h3', 'h4'] }),
             FixedToolbarFeature(),
             InlineToolbarFeature(),
+            TextColorFeature({ colors: ['#10B981', '#0F172A', '#D1FAE5', '#64748B'] }),
           ]
         },
       }),

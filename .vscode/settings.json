@@ -9,7 +9,7 @@
     }
   },
   "[typescriptreact]": {
-    "editor.defaultFormatter": "esbenp.prettier-vscode",
+    "editor.defaultFormatter": "vscode.typescript-language-features",
     "editor.formatOnSave": true,
     "editor.codeActionsOnSave": {
       "source.fixAll.eslint": "explicit"
@@ -37,5 +37,14 @@
     "editor.codeActionsOnSave": {
       "source.fixAll.eslint": "explicit"
     }
+  },
+  "workbench.editor.customLabels.patterns": {
+    "**/src/components/**/index.tsx": "${dirname} (Component)",
+    "**/src/app/**/page.tsx": "${dirname} (Page)",
+    "**/index.*": "${dirname}/${filename}.${extname}",
+    "**/src/blocks/**/Component.tsx": "${dirname} (Block)",
+    "**/src/blocks/**/config.ts": "${dirname} (Block Config)",
+    "**/src/collections/**/index.ts": "${dirname} (Collection)",
+    "**/src/fields/**/index.ts": "${dirname} (Field)"
   }
 }
