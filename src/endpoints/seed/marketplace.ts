@@ -1,5 +1,8 @@
 import type { Payload, PayloadRequest } from 'payload'
 import type { Media, Resource } from '@/payload-types'
+import { readFileSync, existsSync } from 'fs'
+import path from 'path'
+import { fileURLToPath } from 'url'
 
 // Build a minimal Lexical rich-text value from plain paragraphs.
 const lexical = (paragraphs: string[]): Resource['content'] =>
@@ -526,6 +529,44 @@ export const seedMarketplace = async ({
   const resourceIdBySlug = new Map<string, number>()
   const createdResources: { spec: ResourceSpec; id: number }[] = []
 
+  // Create or find sample document (idempotent)
+  const __dirname = path.dirname(fileURLToPath(import.meta.url))
+  const documentPath = path.resolve(__dirname, 'sample-document.pdf')
+  let documentId: number | null = null
+
+  // Check for existing document first
+  const existingDocs = await payload.find({
+    collection: 'documents',
+    depth: 0,
+    limit: 1,
+    where: { title: { equals: 'Sample Document' } },
+  })
+
+  if (existingDocs.docs[0]) {
+    documentId = existingDocs.docs[0].id as number
+    payload.logger.info('— Using existing sample document')
+  } else if (existsSync(documentPath)) {
+    payload.logger.info('— Creating sample document')
+    const fileBuffer = readFileSync(documentPath)
+    const docCreated = await payload.create({
+      collection: 'documents',
+      data: {
+        title: 'Sample Document',
+      },
+      file: {
+        data: fileBuffer,
+        mimetype: 'application/pdf',
+        name: 'sample-document.pdf',
+        size: fileBuffer.length,
+      },
+    })
+    documentId = docCreated.id as number
+  } else {
+    payload.logger.warn(
+      `— Sample document file not found at ${documentPath}. Skipping document assignment.`,
+    )
+  }
+
   for (let i = 0; i < RESOURCES.length; i++) {
     const spec = RESOURCES[i]
     const heroImage = images[i % images.length]
@@ -543,32 +584,39 @@ export const seedMarketplace = async ({
 
     payload.logger.info(`— Creating resource "${spec.title}"...`)
 
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    const resourceData: any = {
+      title: spec.title,
+      slug: spec.slug,
+      _status: 'published',
+      heroImage: heroImage?.id,
+      gallery: images.map((img) => img.id),
+      price: spec.price,
+      verified: spec.verified ?? false,
+      subject: subjectBySlug.get(spec.subject),
+      grades: spec.grades.map((g) => gradeBySlug.get(g)).filter((id): id is number => id != null),
+      resourceType: typeBySlug.get(spec.type),
+      atAGlance: spec.highlights.map((text) => ({ text })),
+      learningObjectives: spec.objectives.map((text) => ({ text })),
+      content: lexical(spec.description),
+      authors: [userByKey.get(spec.author)].filter((id): id is number => id != null),
+      publishedAt: new Date().toISOString(),
+      meta: {
+        title: spec.title,
+        description: spec.description[0],
+        image: heroImage?.id,
+      },
+    }
+
+    if (documentId) {
+      resourceData.document = documentId
+    }
+
     const doc = await payload.create({
       collection: 'resources',
       depth: 0,
       context: { disableRevalidate: true },
-      data: {
-        title: spec.title,
-        slug: spec.slug,
-        _status: 'published',
-        heroImage: heroImage?.id,
-        gallery: images.map((img) => img.id),
-        price: spec.price,
-        verified: spec.verified ?? false,
-        subject: subjectBySlug.get(spec.subject),
-        grades: spec.grades.map((g) => gradeBySlug.get(g)).filter((id): id is number => id != null),
-        resourceType: typeBySlug.get(spec.type),
-        atAGlance: spec.highlights.map((text) => ({ text })),
-        learningObjectives: spec.objectives.map((text) => ({ text })),
-        content: lexical(spec.description),
-        authors: [userByKey.get(spec.author)].filter((id): id is number => id != null),
-        publishedAt: new Date().toISOString(),
-        meta: {
-          title: spec.title,
-          description: spec.description[0],
-          image: heroImage?.id,
-        },
-      },
+      data: resourceData,
     })
 
     resourceIdBySlug.set(spec.slug, doc.id)

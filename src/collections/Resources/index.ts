@@ -100,6 +100,15 @@ export const Resources: CollectionConfig<'resources'> = {
               },
             },
             {
+              name: 'document',
+              type: 'upload',
+              relationTo: 'documents',
+              required: true,
+              admin: {
+                description: 'The main resource document that users will download.',
+              },
+            },
+            {
               name: 'price',
               type: 'number',
               admin: {

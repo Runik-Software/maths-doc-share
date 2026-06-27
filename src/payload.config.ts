@@ -19,6 +19,7 @@ import { plugins } from './plugins'
 import { defaultLexical } from '@/fields/defaultLexical'
 import { getServerSideURL } from './utilities/getURL'
 import { Resources } from './collections/Resources'
+import { Document } from './collections/Document'
 
 const filename = fileURLToPath(import.meta.url)
 const dirname = path.dirname(filename)
@@ -65,6 +66,7 @@ export default buildConfig({
     },
   }),
   collections: [
+    Document,
     Pages,
     Posts,
     Media,
