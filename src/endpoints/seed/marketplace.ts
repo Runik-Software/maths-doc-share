@@ -81,9 +81,24 @@ const AUTHORS = [
 ]
 
 const REVIEWERS = [
-  { key: 'marcus', name: 'Marcus Donnelly', email: 'marcus.d@school.example.com', headline: '8th Grade Teacher' },
-  { key: 'linda', name: 'Linda Spencer', email: 'linda.s@school.example.com', headline: 'Math Specialist' },
-  { key: 'priya', name: 'Priya Anand', email: 'priya.a@school.example.com', headline: 'Head of Department' },
+  {
+    key: 'marcus',
+    name: 'Marcus Donnelly',
+    email: 'marcus.d@school.example.com',
+    headline: '8th Grade Teacher',
+  },
+  {
+    key: 'linda',
+    name: 'Linda Spencer',
+    email: 'linda.s@school.example.com',
+    headline: 'Math Specialist',
+  },
+  {
+    key: 'priya',
+    name: 'Priya Anand',
+    email: 'priya.a@school.example.com',
+    headline: 'Head of Department',
+  },
 ]
 
 type ResourceSpec = {
@@ -158,7 +173,13 @@ const RESOURCES: ResourceSpec[] = [
     description: [
       'A focused pack on quadratic functions, taking students from the basics of factorising through to completing the square and graphing parabolas with confidence.',
     ],
-    reviews: [{ reviewer: 'marcus', rating: 5, body: 'Exactly the practice my students needed before the exam.' }],
+    reviews: [
+      {
+        reviewer: 'marcus',
+        rating: 5,
+        body: 'Exactly the practice my students needed before the exam.',
+      },
+    ],
   },
   {
     slug: 'interactive-geometry-toolkit',
@@ -177,7 +198,13 @@ const RESOURCES: ResourceSpec[] = [
     description: [
       'A complete set of interactive geometry lessons that get students measuring, constructing and reasoning about shapes. Each lesson includes a starter, main activity and plenary.',
     ],
-    reviews: [{ reviewer: 'priya', rating: 4, body: 'Great lesson structure, my department adopted these immediately.' }],
+    reviews: [
+      {
+        reviewer: 'priya',
+        rating: 4,
+        body: 'Great lesson structure, my department adopted these immediately.',
+      },
+    ],
   },
   {
     slug: 'statistical-inference-essentials',
@@ -197,7 +224,13 @@ const RESOURCES: ResourceSpec[] = [
     description: [
       'A free introduction to statistical inference for A-Level students, covering hypothesis testing with real-world datasets and clear, step-by-step worked examples.',
     ],
-    reviews: [{ reviewer: 'linda', rating: 5, body: 'Incredible that this is free. Genuinely classroom-ready.' }],
+    reviews: [
+      {
+        reviewer: 'linda',
+        rating: 5,
+        body: 'Incredible that this is free. Genuinely classroom-ready.',
+      },
+    ],
   },
   {
     slug: 'calculus-limits-and-continuity',
@@ -208,7 +241,11 @@ const RESOURCES: ResourceSpec[] = [
     price: 15.0,
     verified: true,
     author: 'mark',
-    highlights: ['Concept-building worksheets', 'Graphical & algebraic approaches', 'Full solutions'],
+    highlights: [
+      'Concept-building worksheets',
+      'Graphical & algebraic approaches',
+      'Full solutions',
+    ],
     objectives: [
       'Evaluate limits algebraically and graphically.',
       'Determine continuity at a point and on an interval.',
@@ -217,7 +254,13 @@ const RESOURCES: ResourceSpec[] = [
     description: [
       'Introduce limits and continuity with a carefully sequenced set of worksheets that build intuition before formal definitions. Ideal for the start of an A-Level calculus unit.',
     ],
-    reviews: [{ reviewer: 'priya', rating: 5, body: 'The progression from intuition to rigour is beautifully done.' }],
+    reviews: [
+      {
+        reviewer: 'priya',
+        rating: 5,
+        body: 'The progression from intuition to rigour is beautifully done.',
+      },
+    ],
   },
   {
     slug: 'area-and-volume-project',
@@ -235,7 +278,13 @@ const RESOURCES: ResourceSpec[] = [
     description: [
       'A project-based assessment where students design a package or structure, applying their knowledge of area and volume. Includes a clear marking rubric.',
     ],
-    reviews: [{ reviewer: 'marcus', rating: 4, body: 'My students were genuinely engaged with the design brief.' }],
+    reviews: [
+      {
+        reviewer: 'marcus',
+        rating: 4,
+        body: 'My students were genuinely engaged with the design brief.',
+      },
+    ],
   },
   {
     slug: 'linear-equations-real-world',
@@ -254,7 +303,13 @@ const RESOURCES: ResourceSpec[] = [
     description: [
       'Bring linear equations to life with problems rooted in real-world contexts, from mobile phone tariffs to taxi fares. Three differentiated tiers included.',
     ],
-    reviews: [{ reviewer: 'linda', rating: 5, body: 'The contexts are relatable and the differentiation is spot on.' }],
+    reviews: [
+      {
+        reviewer: 'linda',
+        rating: 5,
+        body: 'The contexts are relatable and the differentiation is spot on.',
+      },
+    ],
   },
   {
     slug: 'trigonometry-foundations',
@@ -283,14 +338,13 @@ const RESOURCES: ResourceSpec[] = [
     price: 6.0,
     author: 'elena',
     highlights: ['Printable flashcards', 'Tree & Venn diagrams', 'Quick-fire questions'],
-    objectives: [
-      'Calculate probabilities using diagrams.',
-      'Apply the AND/OR rules confidently.',
-    ],
+    objectives: ['Calculate probabilities using diagrams.', 'Apply the AND/OR rules confidently.'],
     description: [
       'Compact, printable revision cards covering all the key probability skills students need for their GCSE, including tree and Venn diagram techniques.',
     ],
-    reviews: [{ reviewer: 'marcus', rating: 5, body: 'Perfect for last-minute revision sessions.' }],
+    reviews: [
+      { reviewer: 'marcus', rating: 5, body: 'Perfect for last-minute revision sessions.' },
+    ],
   },
   {
     slug: 'number-bonds-starter-pack',
@@ -301,11 +355,16 @@ const RESOURCES: ResourceSpec[] = [
     price: 0,
     author: 'sarah',
     highlights: ['Colourful worksheets', 'Low-prep activities', 'Free download'],
-    objectives: ['Recall number bonds to 10 and 20.', 'Use number bonds to add and subtract fluently.'],
+    objectives: [
+      'Recall number bonds to 10 and 20.',
+      'Use number bonds to add and subtract fluently.',
+    ],
     description: [
       'A free, colourful set of number-bond worksheets and activities for early primary learners. Low-prep and ready to print.',
     ],
-    reviews: [{ reviewer: 'linda', rating: 5, body: 'Lovely bright resources my Year 1 class loved.' }],
+    reviews: [
+      { reviewer: 'linda', rating: 5, body: 'Lovely bright resources my Year 1 class loved.' },
+    ],
   },
   {
     slug: 'simultaneous-equations-deep-dive',
@@ -324,7 +383,9 @@ const RESOURCES: ResourceSpec[] = [
     description: [
       'A thorough teaching sequence on simultaneous equations, covering elimination, substitution and graphical methods, with stretch tasks for the most able.',
     ],
-    reviews: [{ reviewer: 'priya', rating: 5, body: 'Comprehensive and well-paced. Highly recommended.' }],
+    reviews: [
+      { reviewer: 'priya', rating: 5, body: 'Comprehensive and well-paced. Highly recommended.' },
+    ],
   },
   {
     slug: 'data-handling-investigation',
@@ -342,7 +403,13 @@ const RESOURCES: ResourceSpec[] = [
     description: [
       'A rich data-handling investigation that lets students pose their own question, collect data and present findings. Includes a self-assessment checklist.',
     ],
-    reviews: [{ reviewer: 'marcus', rating: 4, body: 'A great way to assess the whole statistics topic at once.' }],
+    reviews: [
+      {
+        reviewer: 'marcus',
+        rating: 4,
+        body: 'A great way to assess the whole statistics topic at once.',
+      },
+    ],
   },
   {
     slug: 'circle-theorems-master-class',
@@ -380,7 +447,9 @@ const RESOURCES: ResourceSpec[] = [
     description: [
       'A complete introduction to differentiation for A-Level, starting from first principles and building up to applications such as tangents and stationary points.',
     ],
-    reviews: [{ reviewer: 'priya', rating: 5, body: 'My go-to resource for introducing calculus.' }],
+    reviews: [
+      { reviewer: 'priya', rating: 5, body: 'My go-to resource for introducing calculus.' },
+    ],
   },
 ]
 
@@ -410,14 +479,17 @@ export const seedMarketplace = async ({
   images,
 }: {
   payload: Payload
-  req: PayloadRequest
+  req?: PayloadRequest
   images: Media[]
 }): Promise<void> => {
   payload.logger.info('— Seeding marketplace taxonomy...')
 
   const subjectBySlug = new Map<string, number>()
   for (const subject of SUBJECTS) {
-    subjectBySlug.set(subject.slug, await findOrCreate(payload, 'subjects', 'slug', subject.slug, subject))
+    subjectBySlug.set(
+      subject.slug,
+      await findOrCreate(payload, 'subjects', 'slug', subject.slug, subject),
+    )
   }
 
   const gradeBySlug = new Map<string, number>()
@@ -427,7 +499,10 @@ export const seedMarketplace = async ({
 
   const typeBySlug = new Map<string, number>()
   for (const type of TYPES) {
-    typeBySlug.set(type.slug, await findOrCreate(payload, 'resource-types', 'slug', type.slug, type))
+    typeBySlug.set(
+      type.slug,
+      await findOrCreate(payload, 'resource-types', 'slug', type.slug, type),
+    )
   }
 
   payload.logger.info('— Seeding marketplace authors & reviewers...')
@@ -454,6 +529,19 @@ export const seedMarketplace = async ({
   for (let i = 0; i < RESOURCES.length; i++) {
     const spec = RESOURCES[i]
     const heroImage = images[i % images.length]
+    const existing = await payload.find({
+      collection: 'resources',
+      depth: 0,
+      limit: 1,
+      where: { slug: { equals: spec.slug } },
+    })
+    if (existing.docs[0]) {
+      resourceIdBySlug.set(spec.slug, existing.docs[0].id as number)
+      createdResources.push({ spec, id: existing.docs[0].id as number })
+      continue
+    }
+
+    payload.logger.info(`— Creating resource "${spec.title}"...`)
 
     const doc = await payload.create({
       collection: 'resources',
