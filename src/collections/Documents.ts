@@ -96,10 +96,11 @@ export const Document: CollectionConfig = {
           return Response.json({ error: 'Document has no URL' }, { status: 404 })
         }
 
-        const absoluteUrl =
-          process.env.NODE_ENV === 'production'
-            ? doc.url
-            : `${process.env.NEXT_PUBLIC_SERVER_URL}${doc.url}`
+        // const absoluteUrl =
+        //   process.env.NODE_ENV === 'production'
+        //     ? doc.url
+        //     : `${process.env.NEXT_PUBLIC_SERVER_URL}${doc.url}`
+        const absoluteUrl = `${process.env.NEXT_PUBLIC_SERVER_URL}${doc.url}`
         payload.logger.debug({ url: doc.url, absoluteUrl }, 'Redirecting to document URL')
 
         const cookieHeader = headers.get('cookie')
