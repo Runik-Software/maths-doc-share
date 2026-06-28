@@ -8,6 +8,7 @@ import type { Resource } from '@/payload-types'
 import { Button } from '@/components/ui/button'
 import { StarRating } from '@/components/StarRating'
 import { AuthorCard } from '@/components/AuthorCard'
+import { PurchaseButton } from '../PurchaseButton'
 
 export const ResourcePurchasePanel: React.FC<{ resource: Resource }> = ({ resource }) => {
   const { title, grades, verified, price, averageRating, reviewCount, atAGlance, populatedAuthors } =
@@ -39,7 +40,7 @@ export const ResourcePurchasePanel: React.FC<{ resource: Resource }> = ({ resour
       <div>
         <h1 className="text-3xl font-bold leading-tight text-foreground">{title}</h1>
         <div className="mt-3 flex items-center gap-2">
-          <StarRating rating={averageRating} starClassName="w-4 h-4" />
+          <StarRating rating={averageRating} />
           <span className="text-sm text-muted-foreground">
             ({reviewCount ?? 0} Teacher Review{(reviewCount ?? 0) === 1 ? '' : 's'})
           </span>
@@ -47,13 +48,11 @@ export const ResourcePurchasePanel: React.FC<{ resource: Resource }> = ({ resour
       </div>
 
       {/* Price */}
-      <div className="rounded-xl bg-emerald-50 p-4">
-        {isFree(price) ? (
-          <span className="text-3xl font-bold text-emerald-700">FREE</span>
-        ) : (
-          <span className="text-3xl font-bold text-foreground">{formatPrice(price)}</span>
-        )}
-      </div>
+      {isFree(price) ? (
+        <span className="text-3xl font-bold text-foreground">FREE</span>
+      ) : (
+        <span className="text-3xl font-bold text-foreground">{formatPrice(price)}</span>
+      )}
 
       {/* Commerce actions — presentational only at this stage */}
       <div className="flex flex-col gap-3">
@@ -61,6 +60,13 @@ export const ResourcePurchasePanel: React.FC<{ resource: Resource }> = ({ resour
           <ShoppingCart className="h-4 w-4" />
           Add to Cart
         </Button>
+        {(typeof resource.document === 'object' && resource.document !== null) ? (
+          <PurchaseButton documentId={resource.document.id} />
+        ) : typeof resource.document === 'number' ? (
+          <PurchaseButton documentId={resource.document} />
+        ) : (
+          <p className="text-sm text-muted-foreground">Document not available for purchase</p>
+        )}
         <Button size="lg" variant="outline" className="w-full">
           <Download className="h-4 w-4" />
           Download Sample (PDF)

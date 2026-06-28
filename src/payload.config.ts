@@ -19,7 +19,8 @@ import { plugins } from './plugins'
 import { defaultLexical } from '@/fields/defaultLexical'
 import { getServerSideURL } from './utilities/getURL'
 import { Resources } from './collections/Resources'
-import { Document } from './collections/Document'
+import { Document } from './collections/Documents'
+import { Purchases } from './collections/Purchases'
 
 const filename = fileURLToPath(import.meta.url)
 const dirname = path.dirname(filename)
@@ -77,6 +78,7 @@ export default buildConfig({
     Grades,
     ResourceTypes,
     Reviews,
+    Purchases,
   ],
   cors: [getServerSideURL()].filter(Boolean),
   globals: [Header, Footer],
