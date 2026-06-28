@@ -52,17 +52,22 @@ export const HeaderClient: React.FC<HeaderClientProps> = ({ data, session }) => 
 
         <div className="ml-auto flex items-center gap-4">
           {/* Cart — presentational at this stage */}
-          <button
+          {/* <button
             type="button"
             aria-label="Cart"
             className="text-foreground transition-colors hover:text-emerald-600"
           >
             <ShoppingCart className="h-5 w-5" />
-          </button>
+          </button> */}
 
           {session ? (
             <div className="flex items-center gap-2">
-              <UserIcon className="h-5 w-5 text-foreground" />
+              <Link
+                href="/account"
+                className="flex items-center gap-1.5 text-sm text-foreground transition-colors hover:text-primary cursor-pointer"
+              >
+                <UserIcon className="h-5 w-5" />
+              </Link>
               <span className="hidden text-sm sm:inline">{session.user.name}</span>
               <Link
                 href="/auth/logout"
