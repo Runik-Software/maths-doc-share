@@ -78,6 +78,7 @@ export interface Config {
     grades: Grade;
     'resource-types': ResourceType;
     reviews: Review;
+    purchases: Purchase;
     redirects: Redirect;
     forms: Form;
     'form-submissions': FormSubmission;
@@ -106,6 +107,7 @@ export interface Config {
     grades: GradesSelect<false> | GradesSelect<true>;
     'resource-types': ResourceTypesSelect<false> | ResourceTypesSelect<true>;
     reviews: ReviewsSelect<false> | ReviewsSelect<true>;
+    purchases: PurchasesSelect<false> | PurchasesSelect<true>;
     redirects: RedirectsSelect<false> | RedirectsSelect<true>;
     forms: FormsSelect<false> | FormsSelect<true>;
     'form-submissions': FormSubmissionsSelect<false> | FormSubmissionsSelect<true>;
@@ -1031,6 +1033,19 @@ export interface Form {
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "purchases".
+ */
+export interface Purchase {
+  id: number;
+  user: number | User;
+  document: number | Document;
+  purchasedAt?: string | null;
+  status?: ('pending' | 'completed' | 'failed') | null;
+  updatedAt: string;
+  createdAt: string;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
  * via the `definition` "redirects".
  */
 export interface Redirect {
@@ -1262,6 +1277,10 @@ export interface PayloadLockedDocument {
     | ({
         relationTo: 'reviews';
         value: number | Review;
+      } | null)
+    | ({
+        relationTo: 'purchases';
+        value: number | Purchase;
       } | null)
     | ({
         relationTo: 'redirects';
@@ -1750,6 +1769,18 @@ export interface ReviewsSelect<T extends boolean = true> {
         picture?: T;
         headline?: T;
       };
+  updatedAt?: T;
+  createdAt?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "purchases_select".
+ */
+export interface PurchasesSelect<T extends boolean = true> {
+  user?: T;
+  document?: T;
+  purchasedAt?: T;
+  status?: T;
   updatedAt?: T;
   createdAt?: T;
 }
