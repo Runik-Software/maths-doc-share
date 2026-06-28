@@ -38,7 +38,7 @@ export const RelatedResources: React.FC<{ resources: Resource[]; className?: str
                     {formatPrice(resource.price)}
                   </span>
                   {(resource.reviewCount ?? 0) > 0 && (
-                    <StarRating rating={resource.averageRating} starClassName="w-3 h-3" />
+                    <StarRating rating={resource.averageRating} />
                   )}
                 </div>
               </div>

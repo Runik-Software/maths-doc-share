@@ -63,7 +63,7 @@ export const ResourceReviews: React.FC<{ reviews: Review[] }> = ({ reviews }) =>
                       <p className="text-sm font-semibold text-foreground">
                         {[author?.name, author?.headline].filter(Boolean).join(', ') || 'Educator'}
                       </p>
-                      <StarRating rating={review.rating} starClassName="w-3.5 h-3.5" />
+                      <StarRating rating={review.rating} />
                     </div>
                   </div>
                   <time className="shrink-0 text-xs text-muted-foreground">
