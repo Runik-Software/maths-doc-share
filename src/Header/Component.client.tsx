@@ -10,6 +10,7 @@ import type { Header } from '@/payload-types'
 import { Logo } from '@/components/Logo/Logo'
 import { HeaderNav } from './Nav'
 import { HeaderSearch } from './Search'
+import { UserMenu } from './UserMenu'
 import { SessionData } from '@auth0/nextjs-auth0/types'
 
 interface HeaderClientProps {
@@ -61,21 +62,11 @@ export const HeaderClient: React.FC<HeaderClientProps> = ({ data, session }) => 
           </button> */}
 
           {session ? (
-            <div className="flex items-center gap-2">
-              <Link
-                href="/account"
-                className="flex items-center gap-1.5 text-sm text-foreground transition-colors hover:text-primary cursor-pointer"
-              >
-                <UserIcon className="h-5 w-5" />
-              </Link>
-              <span className="hidden text-sm sm:inline">{session.user.name}</span>
-              <Link
-                href="/auth/logout"
-                className="text-sm text-muted-foreground transition-colors hover:text-emerald-600"
-              >
-                Logout
-              </Link>
-            </div>
+            <UserMenu
+              name={session.user.name}
+              email={session.user.email}
+              picture={session.user.picture}
+            />
           ) : (
             <Link
               href="/auth/login"

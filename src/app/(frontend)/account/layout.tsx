@@ -14,9 +14,9 @@ export default async function AccountLayout({ children }: { children: React.Reac
     }
 
     return (
-        <div className="flex gap-10 p-8">
+        <div className="flex flex-col gap-6 p-4 md:flex-row md:gap-10 md:p-8">
             <AccountSidebar />
-            <div className="flex-1">{children}</div>
+            <div className="min-w-0 flex-1">{children}</div>
         </div>
     )
 }

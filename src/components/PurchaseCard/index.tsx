@@ -24,18 +24,18 @@ export function PurchaseCard({
     }) : 'N/A'
 
     return (
-        <div className="flex items-center justify-between rounded-xl border border-gray-200 p-4">
+        <div className="flex flex-col gap-4 rounded-xl border border-gray-200 p-4 sm:flex-row sm:items-center sm:justify-between">
             <div className="flex items-center gap-4">
-                <div className={`flex h-10 w-10 items-center justify-center rounded-lg ${iconColor}`}>
+                <div className={`flex h-10 w-10 shrink-0 items-center justify-center rounded-lg ${iconColor}`}>
                     <FileText size={20} />
                 </div>
 
-                <div>
+                <div className="min-w-0">
                     <h3 className="font-semibold text-primary">{title}</h3>
                     <p className="text-sm text-gray-500">
                         Ordered: {formattedDate} &bull; Order #{orderNumber}
                     </p>
-                    <div className="mt-1 flex gap-2">
+                    <div className="mt-1 flex flex-wrap gap-2">
                         {tags.map((tag) => (
                             <span
                                 key={tag}
@@ -50,7 +50,7 @@ export function PurchaseCard({
 
             <a
                 href={`/api/documents/${id}/download`}
-                className="flex items-center gap-1.5 rounded-full bg-emerald-700 px-4 py-2 text-sm font-medium text-white hover:bg-emerald-800 transition-colors"
+                className="flex shrink-0 items-center justify-center gap-1.5 rounded-full bg-emerald-700 px-4 py-2 text-sm font-medium text-white hover:bg-emerald-800 transition-colors"
             >
                 <Download size={14} />
                 Download
