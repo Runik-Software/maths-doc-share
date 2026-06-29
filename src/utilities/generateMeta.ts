@@ -26,9 +26,10 @@ export const generateMeta = async (args: {
 
   const ogImage = getImageURL(doc?.meta?.image)
 
-  const title = doc?.meta?.title
-    ? doc?.meta?.title + ' | Payload Website Template'
-    : 'Payload Website Template'
+  // Bare page title — the root layout's title.template appends ' | MathEd'.
+  // When there's no doc title we leave it undefined so the layout default applies.
+  const pageTitle = doc?.meta?.title || undefined
+  const ogTitle = doc?.meta?.title ? `${doc.meta.title} | MathEd` : 'MathEd'
 
   return {
     description: doc?.meta?.description,
@@ -41,9 +42,9 @@ export const generateMeta = async (args: {
             },
           ]
         : undefined,
-      title,
+      title: ogTitle,
       url: Array.isArray(doc?.slug) ? doc?.slug.join('/') : '/',
     }),
-    title,
+    title: pageTitle,
   }
 }

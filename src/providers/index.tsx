@@ -1,5 +1,6 @@
 import React from 'react';
 
+import { CartProvider } from './Cart';
 import { HeaderThemeProvider } from './HeaderTheme';
 import { ThemeProvider } from './Theme';
 
@@ -9,7 +10,9 @@ export const Providers: React.FC<{
   return (
     <ThemeProvider>
       <HeaderThemeProvider>
-        {children}
+        <CartProvider>
+          {children}
+        </CartProvider>
       </HeaderThemeProvider>
     </ThemeProvider>
   )

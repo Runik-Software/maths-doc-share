@@ -1,6 +1,5 @@
-import { cn } from '@/utilities/ui'
 import { formatPrice, isFree } from '@/utilities/formatPrice'
-import { BadgeCheck, CheckCircle2, Download, ShoppingCart } from 'lucide-react'
+import { BadgeCheck, CheckCircle2, Download } from 'lucide-react'
 import React from 'react'
 
 import type { Resource } from '@/payload-types'
@@ -8,9 +7,12 @@ import type { Resource } from '@/payload-types'
 import { Button } from '@/components/ui/button'
 import { StarRating } from '@/components/StarRating'
 import { AuthorCard } from '@/components/AuthorCard'
-import { PurchaseButton } from '../PurchaseButton'
+import { AddToCartButton } from '@/components/AddToCartButton'
 
-export const ResourcePurchasePanel: React.FC<{ resource: Resource }> = ({ resource }) => {
+export const ResourcePurchasePanel: React.FC<{ resource: Resource; purchased?: boolean }> = ({
+  resource,
+  purchased,
+}) => {
   const { title, grades, verified, price, averageRating, reviewCount, atAGlance, populatedAuthors } =
     resource
 
@@ -54,19 +56,9 @@ export const ResourcePurchasePanel: React.FC<{ resource: Resource }> = ({ resour
         <span className="text-3xl font-bold text-foreground">{formatPrice(price)}</span>
       )}
 
-      {/* Commerce actions — presentational only at this stage */}
+      {/* Commerce actions */}
       <div className="flex flex-col gap-3">
-        <Button size="lg" className="w-full bg-emerald-600 hover:bg-emerald-700">
-          <ShoppingCart className="h-4 w-4" />
-          Add to Cart
-        </Button>
-        {(typeof resource.document === 'object' && resource.document !== null) ? (
-          <PurchaseButton documentId={resource.document.id} />
-        ) : typeof resource.document === 'number' ? (
-          <PurchaseButton documentId={resource.document} />
-        ) : (
-          <p className="text-sm text-muted-foreground">Document not available for purchase</p>
-        )}
+        <AddToCartButton resource={resource} purchased={purchased} />
         <Button size="lg" variant="outline" className="w-full">
           <Download className="h-4 w-4" />
           Download Sample (PDF)

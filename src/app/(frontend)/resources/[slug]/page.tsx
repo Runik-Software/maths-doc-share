@@ -2,7 +2,7 @@ import type { Metadata } from 'next'
 
 import configPromise from '@payload-config'
 import { getPayload } from 'payload'
-import { draftMode } from 'next/headers'
+import { draftMode, headers as getHeaders } from 'next/headers'
 import React, { cache } from 'react'
 
 import type { Media, Resource, Review } from '@/payload-types'
@@ -50,6 +50,27 @@ export default async function ResourcePage({ params: paramsPromise }: Args) {
   if (!resource) return <PayloadRedirects url={url} />
 
   const payload = await getPayload({ config: configPromise })
+
+  // Has the current user already purchased this resource? Used to swap the
+  // "Add to Cart" button for an owned state and prevent buying it twice.
+  const { user } = await payload.auth({ headers: await getHeaders() })
+  let purchased = false
+  if (user) {
+    const owned = await payload.find({
+      collection: 'purchases',
+      depth: 0,
+      limit: 1,
+      where: {
+        and: [
+          { user: { equals: user.id } },
+          { resource: { equals: resource.id } },
+          { status: { equals: 'completed' } },
+        ],
+      },
+    })
+    purchased = owned.totalDocs > 0
+  }
+
   const reviewsResult = await payload.find({
     collection: 'reviews',
     depth: 0,
@@ -98,7 +119,7 @@ export default async function ResourcePage({ params: paramsPromise }: Args) {
 
       <div className="mt-6 grid grid-cols-1 gap-10 lg:grid-cols-[1fr_400px]">
         <ResourceGallery images={images} title={resource.title} />
-        <ResourcePurchasePanel resource={resource} />
+        <ResourcePurchasePanel resource={resource} purchased={purchased} />
       </div>
 
       <div className="mt-14 grid grid-cols-1 gap-10 lg:grid-cols-[1fr_340px]">

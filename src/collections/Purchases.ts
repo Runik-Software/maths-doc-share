@@ -23,9 +23,9 @@ export const Purchases: CollectionConfig = {
       required: true,
     },
     {
-      name: 'document',
+      name: 'resource',
       type: 'relationship',
-      relationTo: 'documents',
+      relationTo: 'resources',
       required: true,
     },
     {

@@ -117,7 +117,7 @@ export default async function ResourcesPage({ searchParams: searchParamsPromise 
 
 export function generateMetadata(): Metadata {
   return {
-    title: 'Browse Maths Resources | MathEd',
+    title: 'Browse Resources',
     description: 'Browse expert-crafted maths resources — filter by subject, grade and type.',
   }
 }

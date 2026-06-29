@@ -1,4 +1,4 @@
-import type { CollectionConfig } from 'payload'
+import type { BasePayload, CollectionConfig } from 'payload'
 
 import path from 'path'
 import { fileURLToPath } from 'url'
@@ -9,6 +9,38 @@ import { NextResponse } from 'next/server'
 
 const filename = fileURLToPath(import.meta.url)
 const dirname = path.dirname(filename)
+
+// Resolve the set of document ids a user can access. Purchases reference a
+// resource, and each resource points to its current document — so this always
+// reflects the latest document, even after a resource's document is swapped.
+const getOwnedDocumentIds = async (payload: BasePayload, userId: number | string): Promise<number[]> => {
+  const purchases = await payload.find({
+    collection: 'purchases',
+    depth: 0,
+    pagination: false,
+    where: {
+      and: [{ user: { equals: userId } }, { status: { equals: 'completed' } }],
+    },
+  })
+
+  const resourceIds = purchases.docs
+    .map((p) => (typeof p.resource === 'object' && p.resource ? p.resource.id : p.resource))
+    .filter((v): v is number => typeof v === 'number')
+
+  if (resourceIds.length === 0) return []
+
+  const resources = await payload.find({
+    collection: 'resources',
+    depth: 0,
+    pagination: false,
+    where: { id: { in: resourceIds } },
+    select: { document: true },
+  })
+
+  return resources.docs
+    .map((r) => (typeof r.document === 'object' && r.document ? r.document.id : r.document))
+    .filter((v): v is number => typeof v === 'number')
+}
 
 export const Document: CollectionConfig = {
   slug: 'documents',
@@ -29,17 +61,9 @@ export const Document: CollectionConfig = {
         return true
       }
 
-      const purchases = await payload.find({
-        collection: 'purchases',
-        where: {
-          and: [{ user: { equals: user.id } }, { status: { equals: 'completed' } }],
-        },
-        pagination: false,
-      })
-
-      const ownedIds = purchases.docs.map((p) =>
-        typeof p.document === 'object' ? p.document.id : p.document,
-      )
+      // Ownership is tracked against resources, not documents, so a user always
+      // has access to whatever document the resource currently points to.
+      const ownedIds = await getOwnedDocumentIds(payload, user.id)
 
       if (ownedIds.length === 0) return false
 
@@ -69,19 +93,10 @@ export const Document: CollectionConfig = {
           return Response.json({ error: 'Unauthorized' }, { status: 401 })
         }
 
-        // Check if the user has purchased the document
-        const owns = await payload.find({
-          collection: 'purchases',
-          where: {
-            and: [
-              { user: { equals: user.id } },
-              { document: { equals: id } },
-              { status: { equals: 'completed' } },
-            ],
-          },
-        })
+        // Check the user owns a resource that currently points to this document.
+        const ownedIds = await getOwnedDocumentIds(payload, user.id)
 
-        if (owns.totalDocs === 0) {
+        if (!ownedIds.includes(Number(id))) {
           return Response.json({ error: 'Forbidden' }, { status: 403 })
         }
 

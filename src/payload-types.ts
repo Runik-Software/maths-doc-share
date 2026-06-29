@@ -1038,7 +1038,7 @@ export interface Form {
 export interface Purchase {
   id: number;
   user: number | User;
-  document: number | Document;
+  resource: number | Resource;
   purchasedAt?: string | null;
   status?: ('pending' | 'completed' | 'failed') | null;
   updatedAt: string;
@@ -1778,7 +1778,7 @@ export interface ReviewsSelect<T extends boolean = true> {
  */
 export interface PurchasesSelect<T extends boolean = true> {
   user?: T;
-  document?: T;
+  resource?: T;
   purchasedAt?: T;
   status?: T;
   updatedAt?: T;

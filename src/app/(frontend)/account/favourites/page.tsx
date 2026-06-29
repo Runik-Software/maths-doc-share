@@ -3,6 +3,11 @@ import config from '@payload-config'
 import { headers as getHeaders } from 'next/headers'
 import { PurchaseCard } from '@/components/PurchaseCard'
 import { redirect } from 'next/navigation'
+import type { Metadata } from 'next'
+
+export const metadata: Metadata = {
+    title: 'Favourites',
+}
 
 const ICON_COLORS = [
     'bg-blue-50 text-blue-600',

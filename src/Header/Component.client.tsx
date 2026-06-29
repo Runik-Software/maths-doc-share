@@ -3,11 +3,12 @@ import { useHeaderTheme } from '@/providers/HeaderTheme'
 import Link from 'next/link'
 import { usePathname } from 'next/navigation'
 import React, { useEffect, useState } from 'react'
-import { ShoppingCart, User as UserIcon } from 'lucide-react'
+import { User as UserIcon } from 'lucide-react'
 
 import type { Header } from '@/payload-types'
 
 import { Logo } from '@/components/Logo/Logo'
+import { CartButton } from './CartButton'
 import { HeaderNav } from './Nav'
 import { HeaderSearch } from './Search'
 import { UserMenu } from './UserMenu'
@@ -52,14 +53,7 @@ export const HeaderClient: React.FC<HeaderClientProps> = ({ data, session }) => 
         </div>
 
         <div className="ml-auto flex items-center gap-4">
-          {/* Cart — presentational at this stage */}
-          {/* <button
-            type="button"
-            aria-label="Cart"
-            className="text-foreground transition-colors hover:text-emerald-600"
-          >
-            <ShoppingCart className="h-5 w-5" />
-          </button> */}
+          <CartButton />
 
           {session ? (
             <UserMenu
