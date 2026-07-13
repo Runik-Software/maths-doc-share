@@ -37,7 +37,7 @@
     "@payloadcms/plugin-redirects": "3.85.0",
     "@payloadcms/plugin-search": "3.85.0",
     "@payloadcms/plugin-seo": "3.85.0",
-    "@payloadcms/plugin-stripe": "^3.85.0",
+    "@payloadcms/plugin-stripe": "3.85.0",
     "@payloadcms/richtext-lexical": "3.85.0",
     "@payloadcms/sdk": "3.85.0",
     "@payloadcms/storage-vercel-blob": "3.85.0",
