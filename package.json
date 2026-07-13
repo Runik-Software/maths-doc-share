@@ -89,13 +89,7 @@
     "vitest": "4.0.18"
   },
   "engines": {
-    "node": "^18.20.2 || >=20.9.0"
-  },
-  "pnpm": {
-    "onlyBuiltDependencies": [
-      "sharp",
-      "esbuild",
-      "unrs-resolver"
-    ]
+    "node": "^18.20.2 || >=20.9.0",
+    "pnpm": "^11"
   }
 }

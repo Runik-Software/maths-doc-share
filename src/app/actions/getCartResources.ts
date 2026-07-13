@@ -8,9 +8,9 @@ import type { Resource } from '@/payload-types'
 export type CartResource = {
   resourceId: number
   title: string
-  price?: number | null
-  slug?: string | null
-  image?: string | null
+  price: number | null
+  slug: string | null
+  image: string | null
 }
 
 const getResourceImage = (heroImage: Resource['heroImage']): string | null => {
