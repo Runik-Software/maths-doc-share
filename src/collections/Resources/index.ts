@@ -15,6 +15,7 @@ import { Banner } from '../../blocks/Banner/config'
 import { Code } from '../../blocks/Code/config'
 import { MediaBlock } from '../../blocks/MediaBlock/config'
 import { generatePreviewPath } from '../../utilities/generatePreviewPath'
+import { syncResourceProduct } from '@/lib/stripe/syncResourceProduct'
 import { populateAuthors } from './hooks/populateAuthors'
 import { revalidateDelete, revalidateResource } from './hooks/revalidateResource'
 
@@ -113,6 +114,22 @@ export const Resources: CollectionConfig<'resources'> = {
               type: 'number',
               admin: {
                 description: 'Leave blank or set to 0 to show the resource as FREE.',
+              },
+            },
+            {
+              name: 'stripeProductId',
+              type: 'text',
+              admin: {
+                readOnly: true,
+                description: 'Synced to Stripe when the resource has a price.',
+              },
+            },
+            {
+              name: 'stripePriceId',
+              type: 'text',
+              admin: {
+                readOnly: true,
+                description: 'Current Stripe price used at checkout.',
               },
             },
             {
@@ -369,7 +386,7 @@ export const Resources: CollectionConfig<'resources'> = {
     slugField(),
   ],
   hooks: {
-    afterChange: [revalidateResource],
+    afterChange: [revalidateResource, syncResourceProduct],
     afterRead: [populateAuthors],
     afterDelete: [revalidateDelete],
   },

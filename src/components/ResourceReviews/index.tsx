@@ -5,6 +5,7 @@ import React from 'react'
 import type { Review } from '@/payload-types'
 
 import { StarRating } from '@/components/StarRating'
+import { Button } from '../ui/button'
 
 const initials = (name?: string | null): string =>
   (name ?? '?')
@@ -26,13 +27,13 @@ export const ResourceReviews: React.FC<{ reviews: Review[] }> = ({ reviews }) =>
           </p>
         </div>
         {/* Presentational — the review-writing flow is not built yet */}
-        <button
-          type="button"
-          className="inline-flex items-center gap-1.5 whitespace-nowrap text-sm font-medium text-emerald-600 hover:underline"
+        <Button
+          variant='ghost'
+          className='text-primary hover:text-primary'
         >
           <PenLine className="h-4 w-4" />
           Write a Review
-        </button>
+        </Button>
       </div>
 
       {reviews.length === 0 ? (

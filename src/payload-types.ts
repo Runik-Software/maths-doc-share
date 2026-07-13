@@ -470,6 +470,8 @@ export interface User {
   bio?: string | null;
   auth0Sub?: string | null;
   roles?: ('Admin' | 'User')[] | null;
+  stripeID?: string | null;
+  skipSync?: boolean | null;
   updatedAt: string;
   createdAt: string;
   collection: 'users';
@@ -668,6 +670,14 @@ export interface Resource {
    * Leave blank or set to 0 to show the resource as FREE.
    */
   price?: number | null;
+  /**
+   * Synced to Stripe when the resource has a price.
+   */
+  stripeProductId?: string | null;
+  /**
+   * Current Stripe price used at checkout.
+   */
+  stripePriceId?: string | null;
   /**
    * This content should show an "at a glance" summary of the resource.
    */
@@ -1041,6 +1051,10 @@ export interface Purchase {
   resource: number | Resource;
   purchasedAt?: string | null;
   status?: ('pending' | 'completed' | 'failed') | null;
+  /**
+   * Stripe Checkout Session that completed this purchase.
+   */
+  stripeCheckoutSessionId?: string | null;
   updatedAt: string;
   createdAt: string;
 }
@@ -1655,6 +1669,8 @@ export interface UsersSelect<T extends boolean = true> {
   bio?: T;
   auth0Sub?: T;
   roles?: T;
+  stripeID?: T;
+  skipSync?: T;
   updatedAt?: T;
   createdAt?: T;
 }
@@ -1668,6 +1684,8 @@ export interface ResourcesSelect<T extends boolean = true> {
   gallery?: T;
   document?: T;
   price?: T;
+  stripeProductId?: T;
+  stripePriceId?: T;
   Overview?: T;
   content?: T;
   atAGlance?:
@@ -1781,6 +1799,7 @@ export interface PurchasesSelect<T extends boolean = true> {
   resource?: T;
   purchasedAt?: T;
   status?: T;
+  stripeCheckoutSessionId?: T;
   updatedAt?: T;
   createdAt?: T;
 }

@@ -2,6 +2,8 @@
 
 import React, { createContext, useCallback, useContext, useEffect, useMemo, useState } from 'react'
 
+import { getCartResources } from '@/app/actions/getCartResources'
+
 export type CartItem = {
   /** Resource id — the cart is keyed on this and it's what gets purchased. */
   resourceId: number
@@ -15,78 +17,125 @@ type CartContextValue = {
   items: CartItem[]
   count: number
   isInCart: (resourceId: number) => boolean
-  addItem: (item: CartItem) => void
+  addItem: (resourceId: number) => void
   removeItem: (resourceId: number) => void
   clearCart: () => void
 }
 
-const STORAGE_KEY = 'cart:v1'
+export const CART_STORAGE_KEY = 'cart:v1'
 
 const CartContext = createContext<CartContextValue | null>(null)
 
-const readStorage = (): CartItem[] => {
+const readStorage = (): number[] => {
   if (typeof window === 'undefined') return []
+
   try {
-    const raw = window.localStorage.getItem(STORAGE_KEY)
+    const raw = window.localStorage.getItem(CART_STORAGE_KEY)
     if (!raw) return []
+
     const parsed = JSON.parse(raw)
-    return Array.isArray(parsed) ? (parsed as CartItem[]) : []
+    if (!Array.isArray(parsed)) return []
+
+    return Array.from(
+      new Set(
+        parsed.reduce<number[]>((resourceIds, entry) => {
+          if (typeof entry === 'number' && Number.isInteger(entry) && entry > 0) {
+            resourceIds.push(entry)
+            return resourceIds
+          }
+
+          if (entry && typeof entry === 'object' && 'resourceId' in entry) {
+            const maybeId = Number((entry as { resourceId?: unknown }).resourceId)
+            if (Number.isInteger(maybeId) && maybeId > 0) {
+              resourceIds.push(maybeId)
+            }
+          }
+
+          return resourceIds
+        }, []),
+      ),
+    )
   } catch {
     return []
   }
 }
 
 export const CartProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
+  const [resourceIds, setResourceIds] = useState<number[]>([])
   const [items, setItems] = useState<CartItem[]>([])
   // Track hydration so the first client render matches the server (empty cart),
   // avoiding a hydration mismatch on the cart count badge.
   const [hydrated, setHydrated] = useState(false)
 
   useEffect(() => {
-    setItems(readStorage())
+    setResourceIds(readStorage())
     setHydrated(true)
   }, [])
 
-  // Persist on change (after initial hydration) and keep other tabs in sync.
   useEffect(() => {
     if (!hydrated) return
+
     try {
-      window.localStorage.setItem(STORAGE_KEY, JSON.stringify(items))
+      window.localStorage.setItem(CART_STORAGE_KEY, JSON.stringify(resourceIds))
     } catch {
       // Ignore quota / serialization errors — the cart is non-critical.
     }
-  }, [items, hydrated])
+  }, [resourceIds, hydrated])
+
+  useEffect(() => {
+    if (!hydrated) return
+
+    if (resourceIds.length === 0) {
+      setItems([])
+      return
+    }
+
+    let isMounted = true
+
+    void getCartResources(resourceIds).then((hydratedItems) => {
+      if (isMounted) {
+        setItems(hydratedItems)
+      }
+    })
+
+    return () => {
+      isMounted = false
+    }
+  }, [hydrated, resourceIds])
 
   useEffect(() => {
     const onStorage = (e: StorageEvent) => {
-      if (e.key === STORAGE_KEY) setItems(readStorage())
+      if (e.key === CART_STORAGE_KEY) {
+        setResourceIds(readStorage())
+      }
     }
     window.addEventListener('storage', onStorage)
     return () => window.removeEventListener('storage', onStorage)
   }, [])
 
-  const addItem = useCallback((item: CartItem) => {
-    setItems((prev) =>
-      prev.some((i) => i.resourceId === item.resourceId) ? prev : [...prev, item],
-    )
+  const addItem = useCallback((resourceId: number) => {
+    setResourceIds((prev) => (prev.includes(resourceId) ? prev : [...prev, resourceId]))
   }, [])
 
   const removeItem = useCallback((resourceId: number) => {
-    setItems((prev) => prev.filter((i) => i.resourceId !== resourceId))
+    setResourceIds((prev) => prev.filter((id) => id !== resourceId))
   }, [])
 
-  const clearCart = useCallback(() => setItems([]), [])
+  const clearCart = useCallback(() => {
+    setResourceIds([])
+    setItems([])
+  }, [])
 
   const value = useMemo<CartContextValue>(
     () => ({
       items,
-      count: hydrated ? items.length : 0,
-      isInCart: (resourceId: number) => items.some((i) => i.resourceId === resourceId),
+      count: hydrated ? resourceIds.length : 0,
+      isInCart: (resourceId: number) => resourceIds.includes(resourceId),
       addItem,
       removeItem,
       clearCart,
     }),
-    [items, hydrated, addItem, removeItem, clearCart],
+    [items, resourceIds, hydrated, addItem, removeItem, clearCart],
   )
 
   return <CartContext.Provider value={value}>{children}</CartContext.Provider>

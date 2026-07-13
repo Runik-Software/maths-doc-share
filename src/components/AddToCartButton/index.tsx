@@ -13,11 +13,6 @@ import { useCart } from '@/providers/Cart'
 const hasDocument = (document: Resource['document']): boolean =>
   typeof document === 'number' || (typeof document === 'object' && document !== null)
 
-const getImageUrl = (heroImage: Resource['heroImage']): string | null => {
-  if (heroImage && typeof heroImage === 'object') return heroImage.url ?? null
-  return null
-}
-
 export const AddToCartButton: React.FC<{ resource: Resource; purchased?: boolean }> = ({
   resource,
   purchased = false,
@@ -38,7 +33,7 @@ export const AddToCartButton: React.FC<{ resource: Resource; purchased?: boolean
       <Button
         size="lg"
         variant="outline"
-        className="w-full border-emerald-600 text-emerald-700 hover:bg-emerald-50"
+        className="w-full border-primary text-primary hover:bg-primary hover:text-background"
         onClick={() => router.push('/account/purchases')}
       >
         <BadgeCheck className="h-4 w-4" />
@@ -65,15 +60,7 @@ export const AddToCartButton: React.FC<{ resource: Resource; purchased?: boolean
     <Button
       size="lg"
       className="w-full bg-primary text-primary-foreground hover:bg-emerald-700"
-      onClick={() =>
-        addItem({
-          resourceId: resource.id,
-          title: resource.title,
-          price: resource.price,
-          slug: resource.slug,
-          image: getImageUrl(resource.heroImage),
-        })
-      }
+      onClick={() => addItem(resource.id)}
     >
       <ShoppingCart className="h-4 w-4" />
       Add to Cart

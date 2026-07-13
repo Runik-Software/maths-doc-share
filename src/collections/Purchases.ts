@@ -11,7 +11,7 @@ export const Purchases: CollectionConfig = {
       }
       return { user: { equals: user.id } } // users can only see their own
     },
-    create: ({ req: { user } }) => !!user, // tighten later when payment is added
+    create: ({ req: { user } }) => user?.roles?.includes('Admin') ?? false,
     update: () => false,
     delete: () => false,
   },
@@ -36,8 +36,16 @@ export const Purchases: CollectionConfig = {
     {
       name: 'status',
       type: 'select',
-      defaultValue: 'completed', // when you add real payments: 'pending' | 'completed' | 'failed'
+      defaultValue: 'completed',
       options: ['pending', 'completed', 'failed'],
+    },
+    {
+      name: 'stripeCheckoutSessionId',
+      type: 'text',
+      admin: {
+        readOnly: true,
+        description: 'Stripe Checkout Session that completed this purchase.',
+      },
     },
   ],
 }

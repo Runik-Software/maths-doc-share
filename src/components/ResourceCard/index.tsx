@@ -15,7 +15,8 @@ import { StarRating } from '@/components/StarRating'
 export const ResourceCard: React.FC<{
   className?: string
   doc?: Resource
-}> = ({ className, doc }) => {
+  purchased?: boolean
+}> = ({ className, doc, purchased = false }) => {
   const { card, link } = useClickableCard({})
   const [favourited, setFavourited] = useState(false)
 
@@ -40,7 +41,7 @@ export const ResourceCard: React.FC<{
       )}
       ref={card.ref}
     >
-      <div className="relative aspect-[4/3] w-full overflow-hidden bg-muted">
+      <div className="relative aspect-4/3 w-full overflow-hidden bg-muted">
         {heroImage && typeof heroImage === 'object' && (
           <Media fill imgClassName="object-cover" resource={heroImage} size="33vw" />
         )}
@@ -79,7 +80,11 @@ export const ResourceCard: React.FC<{
         <div className="mt-auto flex items-center justify-between pt-2">
           <StarRating rating={averageRating} reviewCount={reviewCount} showValue />
 
-          {free ? (
+          {purchased ? (
+            <span className="rounded-md bg-emerald-100 px-2 py-0.5 text-sm font-semibold text-emerald-700">
+              Purchased
+            </span>
+          ) : free ? (
             <span className="rounded-md bg-emerald-100 px-2 py-0.5 text-sm font-bold text-emerald-700">
               FREE
             </span>

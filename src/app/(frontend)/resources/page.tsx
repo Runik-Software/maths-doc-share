@@ -2,6 +2,7 @@ import type { Metadata } from 'next/types'
 import type { Where } from 'payload'
 
 import configPromise from '@payload-config'
+import { headers as getHeaders } from 'next/headers'
 import { getPayload } from 'payload'
 import React from 'react'
 
@@ -70,6 +71,39 @@ export default async function ResourcesPage({ searchParams: searchParamsPromise 
     payload.find({ collection: 'resource-types', depth: 0, limit: 100, sort: 'order' }),
   ])
 
+  const { user } = await payload.auth({ headers: await getHeaders() })
+  let purchasedResourceIds: Array<number | string> = []
+
+  if (user) {
+    const resourceIds = resources.docs
+      .map((resource): number | string | undefined => resource.id)
+      .filter((id): id is number | string => typeof id !== 'undefined')
+
+    if (resourceIds.length) {
+      const owned = await payload.find({
+        collection: 'purchases',
+        depth: 0,
+        pagination: false,
+        overrideAccess: true,
+        where: {
+          and: [
+            { user: { equals: user.id } },
+            { status: { equals: 'completed' } },
+            { resource: { in: resourceIds } },
+          ],
+        },
+      })
+
+      purchasedResourceIds = owned.docs
+        .map((purchase): number | string | undefined =>
+          typeof purchase.resource === 'object' && purchase.resource !== null
+            ? purchase.resource.id
+            : purchase.resource,
+        )
+        .filter((id): id is number | string => typeof id !== 'undefined')
+    }
+  }
+
   const subjectOptions: FilterOption[] = subjects.docs.map((s) => ({ slug: s.slug, title: s.title }))
   const gradeOptions: FilterOption[] = grades.docs.map((g) => ({ slug: g.slug, title: g.title }))
   const typeOptions: FilterOption[] = resourceTypes.docs.map((t) => ({
@@ -99,7 +133,10 @@ export default async function ResourcesPage({ searchParams: searchParamsPromise 
           </div>
 
           {resources.docs.length > 0 ? (
-            <ResourceArchive resources={resources.docs} />
+            <ResourceArchive
+              resources={resources.docs}
+              purchasedResourceIds={purchasedResourceIds}
+            />
           ) : (
             <div className="rounded-xl border border-dashed border-border p-16 text-center text-muted-foreground">
               No resources match your filters. Try clearing some filters.

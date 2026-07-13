@@ -5,7 +5,7 @@ import Link from 'next/link'
 import { useRouter } from 'next/navigation'
 import React, { useState } from 'react'
 
-import { checkoutCart } from '@/app/actions/checkoutCart'
+import { createCheckoutSession } from '@/app/actions/createCheckoutSession'
 import { Button } from '@/components/ui/button'
 import { formatPrice, isFree } from '@/utilities/formatPrice'
 import { useCart } from '@/providers/Cart'
@@ -22,7 +22,13 @@ export default function CartPage() {
     setSubmitting(true)
     setError(null)
     try {
-      await checkoutCart(items.map((i) => i.resourceId))
+      const result = await createCheckoutSession(items.map((i) => i.resourceId))
+
+      if (result.checkoutUrl) {
+        window.location.href = result.checkoutUrl
+        return
+      }
+
       clearCart()
       router.push('/account/purchases')
     } catch (err) {
@@ -130,7 +136,7 @@ export default function CartPage() {
                 {submitting ? 'Processing…' : 'Checkout'}
               </Button>
               <p className="mt-3 text-center text-xs text-muted-foreground">
-                Payment is skipped for now — resources are added straight to your account.
+                Paid resources are processed securely via Stripe Managed Payments.
               </p>
             </div>
           </div>

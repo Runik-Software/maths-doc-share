@@ -3,6 +3,7 @@ import { nestedDocsPlugin } from '@payloadcms/plugin-nested-docs'
 import { redirectsPlugin } from '@payloadcms/plugin-redirects'
 import { seoPlugin } from '@payloadcms/plugin-seo'
 import { searchPlugin } from '@payloadcms/plugin-search'
+import { stripePlugin } from '@payloadcms/plugin-stripe'
 import { Plugin } from 'payload'
 import { revalidateRedirects } from '@/hooks/revalidateRedirects'
 import { GenerateTitle, GenerateURL } from '@payloadcms/plugin-seo/types'
@@ -11,6 +12,7 @@ import { searchFields } from '@/search/fieldOverrides'
 import { beforeSyncWithSearch } from '@/search/beforeSync'
 import { vercelBlobStorage } from '@payloadcms/storage-vercel-blob'
 
+import { handleCheckoutCompleted } from '@/lib/stripe/handleCheckoutCompleted'
 import { Page, Post } from '@/payload-types'
 import { getServerSideURL } from '@/utilities/getURL'
 
@@ -23,6 +25,8 @@ const generateURL: GenerateURL<Post | Page> = ({ doc }) => {
 
   return doc?.slug ? `${url}/${doc.slug}` : url
 }
+
+const stripeSecretKey = process.env.STRIPE_SECRET_KEY
 
 export const plugins: Plugin[] = [
   redirectsPlugin({
@@ -99,4 +103,26 @@ export const plugins: Plugin[] = [
     access: 'public',
     token: process.env.BLOB_READ_WRITE_TOKEN,
   }),
+  ...(stripeSecretKey
+    ? [
+        stripePlugin({
+          stripeSecretKey,
+          stripeWebhooksEndpointSecret: process.env.STRIPE_WEBHOOKS_ENDPOINT_SECRET,
+          webhooks: {
+            'checkout.session.completed': handleCheckoutCompleted,
+          },
+          sync: [
+            {
+              collection: 'users',
+              stripeResourceType: 'customers',
+              stripeResourceTypeSingular: 'customer',
+              fields: [
+                { fieldPath: 'name', stripeProperty: 'name' },
+                { fieldPath: 'email', stripeProperty: 'email' },
+              ],
+            },
+          ],
+        }),
+      ]
+    : []),
 ]
