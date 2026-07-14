@@ -5,6 +5,8 @@ import React from 'react'
 import { ThemeSelector } from '@/providers/Theme/ThemeSelector'
 import { CMSLink } from '@/components/Link'
 import { Logo } from '@/components/Logo/Logo'
+import * as CookieConsent from 'vanilla-cookieconsent'
+import { CookieManagementLink } from '@/components/CookieManagementLink'
 
 export async function Footer() {
   const footerData = await getCachedGlobal('footer', 1)()
@@ -19,12 +21,13 @@ export async function Footer() {
             <Logo />
           </Link>
           <p className="mt-3 max-w-sm text-sm text-muted-foreground">
-            © 2024 MathEd Marketplace. Academic precision for every classroom.
+            © 2026 MathEd Marketplace. Academic precision for every classroom.
           </p>
         </div>
 
         <div className="flex flex-col items-start gap-4 md:items-end">
           <nav className="flex flex-wrap gap-x-6 gap-y-2">
+            <CookieManagementLink />
             {navItems.map(({ link }, i) => (
               <CMSLink
                 className="text-sm text-muted-foreground transition-colors hover:text-emerald-600"

@@ -12,10 +12,13 @@ import { Providers } from '@/providers'
 import { InitTheme } from '@/providers/Theme/InitTheme'
 import { mergeOpenGraph } from '@/utilities/mergeOpenGraph'
 import { draftMode } from 'next/headers'
+import { GoogleAnalytics } from '@next/third-parties/google'
 
 import './globals.css'
 import { getServerSideURL } from '@/utilities/getURL'
 import { auth0 } from '@/lib/auth0'
+import { CookieConsent } from '@/components/CookieConsent'
+import { CookieConsentBanner } from '@/components/CookieConsentBanner'
 
 export default async function RootLayout({ children }: { children: React.ReactNode }) {
   const { isEnabled } = await draftMode()
@@ -29,9 +32,11 @@ export default async function RootLayout({ children }: { children: React.ReactNo
         <link href="/favicon.ico" rel="icon" sizes="32x32" />
         <link href="/favicon.svg" rel="icon" type="image/svg+xml" />
       </head>
+
+
+
       <body>
         <Providers>
-          {}
           <AdminBar
             adminBarProps={{
               preview: isEnabled,
@@ -39,7 +44,10 @@ export default async function RootLayout({ children }: { children: React.ReactNo
           />
 
           <Header />
+          <CookieConsent />
           {children}
+          <CookieConsentBanner />
+          <GoogleAnalytics gaId={process.env.NEXT_PUBLIC_GA_ID!} />
           <Footer />
         </Providers>
       </body>

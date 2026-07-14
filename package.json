@@ -28,6 +28,7 @@
   },
   "dependencies": {
     "@auth0/nextjs-auth0": "^4.21.0",
+    "@next/third-parties": "^16.2.10",
     "@payloadcms/admin-bar": "3.85.0",
     "@payloadcms/db-postgres": "3.85.0",
     "@payloadcms/live-preview-react": "3.85.0",
@@ -63,7 +64,8 @@
     "react-hook-form": "7.71.1",
     "sharp": "0.34.2",
     "stripe": "^22.3.1",
-    "tailwind-merge": "^3.4.0"
+    "tailwind-merge": "^3.4.0",
+    "vanilla-cookieconsent": "^3.1.0"
   },
   "devDependencies": {
     "@eslint/eslintrc": "^3.2.0",
